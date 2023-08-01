@@ -75,7 +75,7 @@ export class LoginComponent {
       id: 5,
       name: 'Vinay Russell',
       phone: '9876556733',
-      image: 'assets/user/user-4.png',
+      image: 'assets/user/user-5.png',
       roomId: {
         1: 'room-4',
         2: 'room-7',
@@ -186,7 +186,7 @@ export class LoginComponent {
     }
     
     this.chatService.setStorage(this.storageArray);
-   // this.chatService.createEmployee(this.storageArray)
+    // this.chatService.createEmployee(this.storageArray)
     this.messageText = '';
   }
 
