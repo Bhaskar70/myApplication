@@ -1,9 +1,12 @@
-<div class="container-fluid" *ngIf="showScreen">
+<!-- <div class="container-fluid" *ngIf="showScreen">
 
     <div class="row">
   
-      <div class="col-md-4">
-  
+      <div class="col-md-3">
+        <div *ngIf="currentUser">
+            <img [src]='currentUser.image' />
+        </div>
+        <input type="text" class="searchBar" (input)="searchUser($event)"/>
         <div class="user-list-card">
           <div class="user-card"
                [ngClass]="user?.phone === selectedUser?.phone ? 'active' :''"
@@ -15,7 +18,7 @@
                  [alt]="user?.name"
                  class="avatar"
             />
-            <p class="username">{{user?.name}}</p>
+            <span class="username">{{user?.name}}</span>
   
           </div>
         </div>
@@ -67,13 +70,14 @@
             </div>
           </ng-container>
         </div>
-  
+        
       </div>
   
     </div>
   
-  </div>
+  </div> -->
   <!-- PopUp Model -->
+  <app-chat-room *ngIf="showScreen" [currentUser]="currentUser" [selectedUser]="selectedUser" [userList]="userList" [mockUserList]="mockUserList"></app-chat-room>
   <ng-template #popup let-d="dismiss">
   
     <div class="modal-header">
@@ -90,7 +94,7 @@
                    placeholder="Enter your phone number"
                    class="form-control"
                    [(ngModel)]="phone"
-                  
+                   (keyup)="$event.keyCode === 13 && login(d)"
             />
           </div>
   

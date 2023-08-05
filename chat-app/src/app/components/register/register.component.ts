@@ -82,5 +82,12 @@ export class RegisterComponent {
 			this.url = reader.result; 
 		}
 	}
-
+  phoneNumValidation(evt:any){
+    if(evt.target.value.length > 9){
+      console.log(evt.target.value.length , "11111")
+      evt.target.preventDefault()
+      return
+      
+    }
+  }
 }

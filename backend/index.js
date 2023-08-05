@@ -1,5 +1,9 @@
 let express = require('express');
+
 let app = express();
+
+// Require the MongoDB client
+const { MongoClient } = require('mongodb');
 
 let http = require('http');
 let server = http.Server(app);
@@ -9,7 +13,10 @@ let io = socketIO(server);
 
 const port = process.env.PORT || 3000;
 
-const MONGO_DB = 'mongodb+srv://bhaskar:<password>@cluster0.pym3mcr.mongodb.net/'
+// MongoDB connection URI (replace 'your-mongodb-uri' with your actual connection URI)
+const uri = 'mongodb+srv://bhaskar:r123r456@cluster0.pym3mcr.mongodb.net/?retryWrites=true&w=majority';
+// Create a new MongoClient
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 
 io.on('connection', (socket) => {
@@ -26,3 +33,35 @@ io.on('connection', (socket) => {
 server.listen(port, () => {
     console.log(`started on port: ${port}`);
 });
+
+
+
+
+// Function to connect to the database and execute operations
+async function connectToDatabase() {
+  try {
+    // Connect to the MongoDB server
+    await client.connect();
+    console.log('Connected to MongoDB');
+
+
+    // Example: Insert a document into a collection
+    const db = client.db();
+    const collection = db.collection('userData');
+    const document = { name: 'John Doe', age: 30, email: 'john@example.com' };
+    const result = await collection.insertOne(document);
+
+    // Example: Find documents in a collection
+    const findResult = await collection.find({ name: 'John Doe' }).toArray();
+
+    // Close the connection to the MongoDB server
+    await client.close();
+    console.log('Connection to MongoDB closed');
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
+}
+
+// Call the function to connect to the database and perform operations
+connectToDatabase();
+

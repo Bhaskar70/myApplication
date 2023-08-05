@@ -56,4 +56,5 @@ export class ChatService {
     console.log(data ,"setting")
     localStorage.setItem('chats', JSON.stringify(data));
   }
+ 
 }

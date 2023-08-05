@@ -11,19 +11,21 @@
               <form [formGroup]="registerData">
 
                 <div class="form-outline mb-4">
-                  <input type="text" id="form3Example1cg" class="form-control"  formControlName="name" />
+                  <input type="text" id="form3Example1cg" class="form-control" formControlName="name" />
                   <label class="form-label" for="form3Example1cg">Your Name</label>
                 </div>
 
                 <div class="form-outline mb-4">
-                  <input type="text" id="form3Example3cg" class="form-control" formControlName="phone" />
-                  <label class="form-label" for="form3Example3cg">Your Email</label>
+                  <input type="text" id="form3Example3cg" (keypress)="phoneNumValidation($event)" class="form-control"
+                    formControlName="phone" />
+                  <label class="form-label" for="form3Example3cg">Mobile Number</label>
                 </div>
 
-                
+
 
                 <div class="form-outline mb-4">
-                  <input type="file" id="form3Example4cdg" class="form-control" (change)="selectFile($event)"  formControlName="photo"/>
+                  <input type="file" id="form3Example4cdg" class="form-control" (change)="selectFile($event)"
+                    formControlName="photo" />
                   <label class="form-label" for="form3Example4cdg">Choose Profile Pic</label>
                 </div>
 
@@ -35,8 +37,8 @@
                 </div>
 
                 <div class="d-flex justify-content-center">
-                  <button type="button"
-                    class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" (click)="RegisterForm()">Register</button>
+                  <button type="button" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"
+                    (click)="RegisterForm()">Register</button>
                 </div>
 
                 <p class="text-center text-muted mt-5 mb-0">Have already an account? <a routerLink="/"
@@ -51,27 +53,28 @@
   </div>
 </section>
 <ng-template #registered let-r="dismiss">
-  
-    <div class="modal-header">
-      <h4 class="modal-title">Entered Mobile Number is not registered</h4>
-    </div>
-  
-    <div class="modal-body">
-  
-      <div class="row">
-        <div class="col-md-12">
-  
-          <div class="form-group">
-            Look like you don't have an account please register
-          </div>
-  
+
+  <div class="modal-header">
+    <h4 class="modal-title">
+      Your Registration is successful
+    </h4>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="form-group">
+          Hi {{registerData.get('name')?.value }} , Welcome to ChatApplication
         </div>
+
       </div>
-  
     </div>
-  
-    <div class="modal-footer blahblah">
-      <a routerLink="/" (click)="r()">Click Here To Register</a>
-    </div>
-  
-  </ng-template>
+
+  </div>
+
+  <div class="modal-footer blahblah">
+    <a routerLink="/" (click)="r()">Go To Login</a>
+  </div>
+</ng-template>
