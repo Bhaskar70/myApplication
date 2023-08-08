@@ -4,7 +4,10 @@ let app = express();
 
 // Require the MongoDB client
 const { MongoClient } = require('mongodb');
-
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const User = require('./user'); 
 let http = require('http');
 let server = http.Server(app);
 
@@ -12,12 +15,20 @@ let socketIO = require('socket.io');
 let io = socketIO(server);
 
 const port = process.env.PORT || 3000;
-
+app.use(bodyParser.json());
+app.use(cors());
 // MongoDB connection URI (replace 'your-mongodb-uri' with your actual connection URI)
 const uri = 'mongodb+srv://bhaskar:r123r456@cluster0.pym3mcr.mongodb.net/?retryWrites=true&w=majority';
+
 // Create a new MongoClient
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
+mongoose.connect('mongodb+srv://bhaskar:r123r456@cluster0.pym3mcr.mongodb.net/?retryWrites=true&w=majority', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('Connected to MongoDB'))
+.catch(err => console.error('Error connecting to MongoDB:', err));
 
 io.on('connection', (socket) => {
     socket.on('join', (data) => {
@@ -27,9 +38,18 @@ io.on('connection', (socket) => {
 
     socket.on('message', (data) => {
         io.in(data.room).emit('new message', {user: data.user, message: data.message});
+        app.get('/api/users', async (req, res) => {
+          try {
+            // Fetch data from MongoDB
+            const users = await User.find();
+            console.log("user :",)
+            res.json({data:'hjdfhshdfhdfhjfh'})
+          } catch (error) {
+            res.status(500).json({ error: error.message });
+          }
+        });
     });
 });
-
 server.listen(port, () => {
     console.log(`started on port: ${port}`);
 });

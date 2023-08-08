@@ -126,6 +126,11 @@ export class LoginComponent {
     
     }
   }
-
-
+  phoneValidation(evt :any){
+   console.log(this.phone ,"1111")
+   if(this.phone.length > 9){
+     evt.preventDefault()
+     return
+   }
+  }
 }

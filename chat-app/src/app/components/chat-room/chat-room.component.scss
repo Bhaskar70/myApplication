@@ -8,15 +8,44 @@
 }
 
 .avatar {
-    border-radius: 63%;
-    height: 96px;
-    width: 24%;
+    height: 44px;
+    border-radius: 64%;
+    margin-right: 10px;
+    width: 70px;
+}
+
+.user-card {
+    padding: 6px;
 }
 
 .searchBar {
-    width: 100%;
-    border-radius: 33px;
-    border: 1px solid lightgray;
+    .searchField {
+        width: 100%;
+        outline: none;
+        border-radius: 33px;
+        border: 1px solid lightgray;
+        padding-left: 3px;
+
+        :focus {
+            outline: 1px solid;
+        }
+
+        ::placeholder {
+            height: 4px;
+        }
+    }
+
+    svg {
+        position: absolute;
+        right: 18px;
+        top: 5px;
+    }
+}
+
+
+
+.currentUser {
+    padding: 10px;
 }
 
 .welcome-msg {
@@ -24,41 +53,44 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 100vh;
+    height: 85vh;
     margin: 32px;
-    //     background-image: url('./../../../assets/user/app1.jfif');
-    //     background-repeat: no-repeat;
-}
 
-.pic {
-    width: 57%;
-}
+    .welcome-chat {
+        border: 2px solid indigo;
+        border-radius: 10px;
+        position: relative;
 
-.welcome-chat {
-    border: 2px solid indigo;
-    border-radius: 10px;
-    position: relative;
-
-    .arrow {
-        position: absolute;
-
-        .arrow-left {
-            height: 16px;
-            width: 11px;
-            border-left: 2px solid indigo;
-            background: #fff;
-            position: absolute;
-            left: 26px;
+        h2 {
+            padding: 10px;
         }
 
-        .arrow-cross {
-            height: 18px;
-            width: 11px;
-            border-right: 2px solid indigo;
+        .arrow {
             position: absolute;
-            left: 23px;
-            rotate: 35deg;
-            bottom: -14px;
+
+            .arrow-left {
+                height: 16px;
+                width: 11px;
+                border-left: 2px solid indigo;
+                background: #fff;
+                position: absolute;
+                left: 26px;
+            }
+
+            .arrow-cross {
+                height: 18px;
+                width: 11px;
+                border-right: 2px solid indigo;
+                position: absolute;
+                left: 23px;
+                rotate: 35deg;
+                bottom: -14px;
+            }
         }
     }
+    .pic {
+        width: 57%;
+    }
+    
+
 }

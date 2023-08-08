@@ -10,6 +10,7 @@ export class ChatService {
   private socket: Socket;
   private url = 'http://localhost:3000'; // your server local path
 
+
   constructor(private http :HttpClient) {
     this.socket = io(this.url, {transports: ['websocket', 'polling', 'flashsocket']});
   }
@@ -26,15 +27,7 @@ export class ChatService {
   sendMessage(data:any): void {
     this.socket.emit('message', data);
   }
-  createEmployee(employee: any) {
-    console.log(employee,'servie')
-    return this.http
-      .post(
-        this.url + '/posts',
-        JSON.stringify(employee),
-        this.httpOptions
-      )   
-  }
+ 
   getMessage(): Observable<any> {
     return new Observable<{user: string, message: string}>(observer => {
       this.socket.on('new message', (data) => {
@@ -56,5 +49,8 @@ export class ChatService {
     console.log(data ,"setting")
     localStorage.setItem('chats', JSON.stringify(data));
   }
+ getChatData(){
+  return this.http .get(`${this.url}/api/users`)
+ }
  
 }

@@ -26,9 +26,6 @@ export class RegisterComponent {
   ngOnInit() {
     let data :any= localStorage.getItem('userData')
     this.loginData = JSON.parse(data)
-    this.service.getMessage().subscribe((v: any) => {
-      console.log(v, '89')
-    })
   }
   openPopup(content: any): void {
     this.modalService.open(content, { backdrop: 'static', centered: true });

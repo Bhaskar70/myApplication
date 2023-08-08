@@ -3,21 +3,22 @@
   <div class="row">
 
     <div class="col-md-3">
-      <div *ngIf="currentUser">
-          <img class="avatar" [src]='currentUser.image' />
+      <div *ngIf="currentUser" class="currentUser">
+        <img class="avatar" [src]='currentUser.image' />
       </div>
-      <input type="text" class="searchBar" (input)="searchUser($event)"/>
+      <div class="searchBar">
+        <input type="text" class="searchField" (input)="searchUser($event)" />
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search"
+          viewBox="0 0 16 16">
+          <path
+            d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+        </svg>
+      </div>
       <div class="user-list-card">
-        <div class="user-card"
-             [ngClass]="user?.phone === selectedUser?.phone ? 'active' :''"
-             *ngFor="let user of userList"
-             (click)="selectUserHandler(user?.phone)"
-        >
+        <div class="user-card" [ngClass]="user?.phone === selectedUser?.phone ? 'active' :''"
+          *ngFor="let user of userList" (click)="selectUserHandler(user?.phone)">
 
-          <img [src]="user?.image"
-               [alt]="user?.name"
-               class="avatar"
-          />
+          <img [src]="user?.image" [alt]="user?.name" class="avatar" />
           <span class="username">{{user?.name}}</span>
 
         </div>
@@ -30,18 +31,13 @@
         <ng-container *ngIf="selectedUser">
           <div class="chat-header">
 
-            <img [src]="selectedUser?.image"
-                 [alt]="selectedUser?.name"
-                 class="avatar"
-            />
+            <img [src]="selectedUser?.image" [alt]="selectedUser?.name" class="avatar" />
             <p class="username">{{selectedUser?.name}}</p>
 
           </div>
 
           <div class="chat-body">
-            <div *ngFor="let item of messageArray"
-                 [ngClass]="item?.user === currentUser?.name ? 'same-user':''"
-            >
+            <div *ngFor="let item of messageArray" [ngClass]="item?.user === currentUser?.name ? 'same-user':''">
               <p class="message-container">{{item?.message}}</p>
             </div>
           </div>
@@ -51,18 +47,13 @@
             <div class="row">
               <div class="col-md-10">
                 <div class="form-group mb-0">
-                  <input type="text"
-                         placeholder="Type a message"
-                         class="form-control"
-                         [(ngModel)]="messageText"
-                         (keyup)="$event.keyCode === 13 && sendMessage()"
-                  />
+                  <input type="text" placeholder="Type a message" class="form-control" [(ngModel)]="messageText"
+                    (keyup)="$event.keyCode === 13 && sendMessage()" />
                 </div>
               </div>
 
               <div class="col-md-2 text-center align-self-center">
-                <button class="btn btn-primary btn-sm px-3"
-                        (click)="sendMessage()">Send
+                <button class="btn btn-primary btn-sm px-3" (click)="sendMessage()">Send
                 </button>
               </div>
             </div>
@@ -78,9 +69,9 @@
             <div class="arrow-cross"></div>
           </div>
         </div>
-          <img class="pic" src="assets/user/chatimg.jpg" />
+        <img class="pic" src="assets/user/chatimg.jpg" />
       </div>
-      
+
     </div>
 
   </div>

@@ -19,6 +19,7 @@ export class ChatRoomComponent {
   @Input() userList: any;
   @Input() mockUserList: any;
   ngOnInit() {
+    this.chatService.getChatData().subscribe(res=>console.log(res ,"chatdata"))
     this.chatService.getMessage()
     .subscribe((data: { user: string, room: string, message: string }) => {
       if (this.roomId) {
@@ -79,11 +80,11 @@ export class ChatRoomComponent {
           message: this.messageText
         }]
       };
+      console.log(updateStorage ,"12345")
       this.storageArray.push(updateStorage);
     }
 
     this.chatService.setStorage(this.storageArray);
-    // this.chatService.createEmployee(this.storageArray)
     this.messageText = '';
   }
   searchUser(evt: any) {
