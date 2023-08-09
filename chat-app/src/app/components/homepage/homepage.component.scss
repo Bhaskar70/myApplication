@@ -1,0 +1,23 @@
+.main{
+    background-image: url('../../../assets/user/mychatlogo.png');
+    height: 63vh;
+    width: 89%;
+    background-repeat: no-repeat;
+    background-position: right;
+}
+.msg{
+    margin: auto auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 50%;
+    justify-content: center;
+    font-family: monospace;
+    div{
+        width: 100%;
+        button{
+            margin: 3px;
+        }
+    }
+}

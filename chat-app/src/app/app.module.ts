@@ -11,13 +11,15 @@ import { ChatRoomComponent } from './components/chat-room/chat-room.component';
 import {  StoreModule } from '@ngrx/store';
 import { reducerData } from './state/app.reducer';
 import { ChatService } from './services/chat/chat.service';
+import { HomepageComponent } from './components/homepage/homepage.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    ChatRoomComponent
+    ChatRoomComponent,
+    HomepageComponent,
   ],
   imports: [
     BrowserModule,
