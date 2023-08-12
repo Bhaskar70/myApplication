@@ -50,7 +50,11 @@ export class ChatService {
     localStorage.setItem('chats', JSON.stringify(data));
   }
  getChatData(){
-  return this.http .get(`${this.url}/api/users`)
+  return this.http.get(`${this.url}/api/users`)
+ }
+
+ updateChats(data:any){
+  return this.http.post(`${this.url}/api/update`, data)
  }
  
 }

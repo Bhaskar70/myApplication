@@ -20,8 +20,9 @@ export class ChatRoomComponent {
   @Input() mockUserList: any;
   ngOnInit() {
     this.chatService.getChatData().subscribe(res=>console.log(res ,"chatdata"))
-    this.chatService.getMessage()
-    .subscribe((data: { user: string, room: string, message: string }) => {
+    this.chatService.updateChats({id : "gfgh" , description :"hello world"}).subscribe(res=>console.log(res ,"updatedchats"))
+
+    this.chatService.getMessage().subscribe((data: { user: string, room: string, message: string }) => {
       if (this.roomId) {
         setTimeout(() => {
           this.storageArray = this.chatService.getStorage();
