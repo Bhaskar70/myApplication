@@ -37,12 +37,10 @@ export class RegisterComponent {
         obj[i] = `room-${(this.loginData.length) * 2 + i}`
       }
     }
-    console.log(obj, "37::::")
     Object.keys(obj).forEach((val, i) => {
       this.loginData[i].roomId[this.loginData.length + 1] = obj[val]
     })
     this.openPopup(this.registered )
-    console.log(this.loginData, "345:::", obj)
     let data = {
       id: this.loginData.length + 1,
       name: this.registerData.get('name')?.value,
@@ -81,7 +79,6 @@ export class RegisterComponent {
 	}
   phoneNumValidation(evt:any){
     if(evt.target.value.length > 9){
-      console.log(evt.target.value.length , "11111")
       evt.target.preventDefault()
       return
       

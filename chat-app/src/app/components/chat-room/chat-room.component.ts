@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { map } from 'rxjs/operators';
 import { ChatService } from 'src/app/services/chat/chat.service';
 
 @Component({
@@ -19,27 +20,24 @@ export class ChatRoomComponent {
   @Input() userList: any;
   @Input() mockUserList: any;
   ngOnInit() {
-    this.chatService.getChatData().subscribe(res=>console.log(res ,"chatdata"))
-    this.chatService.updateChats({id : "gfgh" , description :"hello world"}).subscribe(res=>console.log(res ,"updatedchats"))
-
     this.chatService.getMessage().subscribe((data: { user: string, room: string, message: string }) => {
       if (this.roomId) {
         setTimeout(() => {
-          this.storageArray = this.chatService.getStorage();
+           this.storageArray = this.chatService.getStorage();
+           console.log(this.storageArray , "storageArray")
+          //this.storageArray = this.chatService.getChatData().subscribe(res => res);
           const storeIndex = this.storageArray
             .findIndex((storage:any) => storage.roomId === this.roomId);
-            console.log(this.roomId, 'roomid', storeIndex ,'index', this.storageArray , 'arr')
           this.messageArray = this.storageArray[storeIndex].chats;
         }, 500);
       }
     });
-   }
+  }
 
   constructor(private chatService: ChatService) { }
   selectUserHandler(phone: string): void {
     this.selectedUser = this.userList.find((user: any) => user.phone === phone);
     this.roomId = this.selectedUser.roomId[this.currentUser.id];
-    console.log(this.selectedUser, "79::::")
     this.messageArray = [];
     this.storageArray = this.chatService.getStorage();
     const storeIndex = this.storageArray
@@ -57,7 +55,8 @@ export class ChatRoomComponent {
   }
 
   sendMessage(): void {
-    console.log(this.roomId, this.currentUser.name, "12222")
+  
+
     this.chatService.sendMessage({
       user: this.currentUser.name,
       room: this.roomId,
@@ -81,16 +80,13 @@ export class ChatRoomComponent {
           message: this.messageText
         }]
       };
-      console.log(updateStorage ,"12345")
       this.storageArray.push(updateStorage);
     }
-
+    // this.chatService.updateChats(this.storageArray).subscribe((res)=>console.log(res , "Update Data"))
     this.chatService.setStorage(this.storageArray);
     this.messageText = '';
   }
   searchUser(evt: any) {
-    console.log(evt.target.value, "1111111")
     this.userList = this.mockUserList.filter((val: any) => val.name.toLowerCase().indexOf(evt.target.value.toLowerCase()) > -1)
-    console.log(this.userList, "filterData")
   }
 }

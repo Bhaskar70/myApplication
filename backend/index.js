@@ -38,7 +38,7 @@ io.on('connection', (socket) => {
   });
 });
 server.listen(port, () => {
-  console.log(`started on port: ${port}`);
+   console.log(`started on port: ${port}`);
 });
 
 
@@ -60,8 +60,12 @@ app.get('/api/users', async (req, res) => {
 
 app.post('/api/update', async(req , res )=>{
   try{
-    console.log(req.body , "req")
     await createDb()
+    collection.find({}).insertOne(req.body , function(err, res) {
+      if (err) throw err;
+      console.log("1 document inserted");
+      db.close();
+    })
     res.json(req.body)
   }catch(error){
     res.status(500).json({error : error.message})

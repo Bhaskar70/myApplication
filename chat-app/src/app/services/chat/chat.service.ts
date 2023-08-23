@@ -41,12 +41,10 @@ export class ChatService {
   }
   getStorage() {
     const storage: any = localStorage.getItem('chats');
-    console.log(storage ,"getting")
     return storage ? JSON.parse(storage) : [];
   }
 
   setStorage(data:any) {
-    console.log(data ,"setting")
     localStorage.setItem('chats', JSON.stringify(data));
   }
  getChatData(){
@@ -56,5 +54,5 @@ export class ChatService {
  updateChats(data:any){
   return this.http.post(`${this.url}/api/update`, data)
  }
- 
+  
 }

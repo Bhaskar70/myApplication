@@ -108,7 +108,6 @@ export class LoginComponent {
   }
 
   openPopup(content: any): void {
-    console.log(this.popup,"12345")
     this.modalService.open(content, {backdrop: 'static', centered: true});
   }
 
@@ -116,7 +115,6 @@ export class LoginComponent {
     this.currentUser = this.userList.find((user:any) => user.phone === this.phone.toString());
     this.userList = this.userList.filter((user:any) => user.phone !== this.phone.toString());
     this.mockUserList = this.userList
-    console.log(this.currentUser,'101:::')
     if (this.currentUser) {
       this.showScreen = true;
        dismiss();
@@ -127,7 +125,6 @@ export class LoginComponent {
     }
   }
   phoneValidation(evt :any){
-   console.log(this.phone ,"1111")
    if(this.phone.length > 9){
      evt.preventDefault()
      return
