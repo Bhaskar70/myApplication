@@ -1,6 +1,8 @@
 import { Component, Input } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { ChatService } from 'src/app/services/chat/chat.service';
+import { UserData, getMobileNumber } from 'src/app/state/app.selector';
 
 @Component({
   selector: 'app-chat-room',
@@ -11,21 +13,29 @@ export class ChatRoomComponent {
   public roomId: string = '';
   public messageText: string = '';
   public messageArray: { user: string, message: string }[] = [];
-  private storageArray: any = [];
-
+  storageArray: any = [];
+ 
   public showScreen = false;
   public phone: string = '';
-  @Input() currentUser: any;
-  @Input() selectedUser: any;
-  @Input() userList: any;
-  @Input() mockUserList: any;
+   currentUser: any;
+   selectedUser: any;
+   userList: any;
+   mockUserList: any;
   ngOnInit() {
+    this.store.select(UserData).subscribe((userdata)=>{
+      this.userList = userdata
+    })
+     this.store.select(getMobileNumber).subscribe((phone:any)=>{
+       this.currentUser = this.userList.find((user:any) => user.phone === phone.toString());
+       this.userList = this.userList.filter((user:any) => user.phone !== phone.toString());
+       this.mockUserList = this.userList
+       console.log(phone , "26:::" )
+     })
     this.chatService.getMessage().subscribe((data: { user: string, room: string, message: string }) => {
       if (this.roomId) {
         setTimeout(() => {
            this.storageArray = this.chatService.getStorage();
            console.log(this.storageArray , "storageArray")
-          //this.storageArray = this.chatService.getChatData().subscribe(res => res);
           const storeIndex = this.storageArray
             .findIndex((storage:any) => storage.roomId === this.roomId);
           this.messageArray = this.storageArray[storeIndex].chats;
@@ -34,7 +44,7 @@ export class ChatRoomComponent {
     });
   }
 
-  constructor(private chatService: ChatService) { }
+  constructor(private chatService: ChatService , private store :Store) { }
   selectUserHandler(phone: string): void {
     this.selectedUser = this.userList.find((user: any) => user.phone === phone);
     this.roomId = this.selectedUser.roomId[this.currentUser.id];
@@ -42,7 +52,6 @@ export class ChatRoomComponent {
     this.storageArray = this.chatService.getStorage();
     const storeIndex = this.storageArray
       .findIndex((storage: any) => storage.roomId === this.roomId);
-
     if (storeIndex > -1) {
       this.messageArray = this.storageArray[storeIndex].chats;
     }
@@ -55,8 +64,6 @@ export class ChatRoomComponent {
   }
 
   sendMessage(): void {
-  
-
     this.chatService.sendMessage({
       user: this.currentUser.name,
       room: this.roomId,
@@ -64,6 +71,7 @@ export class ChatRoomComponent {
     });
 
     this.storageArray = this.chatService.getStorage();
+    
     const storeIndex = this.storageArray
       .findIndex((storage: any) => storage.roomId === this.roomId);
 
@@ -82,11 +90,12 @@ export class ChatRoomComponent {
       };
       this.storageArray.push(updateStorage);
     }
-    // this.chatService.updateChats(this.storageArray).subscribe((res)=>console.log(res , "Update Data"))
     this.chatService.setStorage(this.storageArray);
     this.messageText = '';
   }
   searchUser(evt: any) {
-    this.userList = this.mockUserList.filter((val: any) => val.name.toLowerCase().indexOf(evt.target.value.toLowerCase()) > -1)
+    this.userList = this.mockUserList.filter((val: any) => {
+      return  val.name.toLowerCase().indexOf(evt.target.value.toLowerCase()) > -1
+      })
   }
 }

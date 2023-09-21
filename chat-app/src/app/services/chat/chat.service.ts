@@ -43,16 +43,20 @@ export class ChatService {
     const storage: any = localStorage.getItem('chats');
     return storage ? JSON.parse(storage) : [];
   }
+  getUserData(){
+    const userData : any = localStorage.getItem('userData');
+    return userData ? JSON.parse(userData) : [];
+  }
 
   setStorage(data:any) {
     localStorage.setItem('chats', JSON.stringify(data));
   }
- getChatData(){
-  return this.http.get(`${this.url}/api/users`)
- }
+//  getChatData(){
+//   return this.http.get(`${this.url}/api/users`)
+//  }
 
- updateChats(data:any){
-  return this.http.post(`${this.url}/api/update`, data)
- }
+//  updateChats(data:any){
+//   return this.http.post(`${this.url}/api/update`, data)
+//  }
   
 }

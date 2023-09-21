@@ -5,6 +5,7 @@
     <div class="col-md-3">
       <div *ngIf="currentUser" class="currentUser">
         <img class="avatar" [src]='currentUser.image' />
+        <p>{{currentUser.name}}</p>
       </div>
       <div class="searchBar">
         <input type="text" class="searchField" (input)="searchUser($event)" />
@@ -38,7 +39,9 @@
 
           <div class="chat-body">
             <div *ngFor="let item of messageArray" [ngClass]="item?.user === currentUser?.name ? 'same-user':''">
-              <p class="message-container">{{item?.message}}</p>
+             <div class="message">
+               <p class="message-container">{{item?.message}}</p>
+             </div>
             </div>
           </div>
 

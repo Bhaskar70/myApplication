@@ -11,4 +11,7 @@ export class AppComponent {
  ngOnInit(){
 
  }
+ name(evt:any){
+ console.log(evt ,"123")
+ }
 }

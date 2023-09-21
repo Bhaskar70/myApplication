@@ -48,7 +48,7 @@ server.listen(port, () => {
 app.get('/api/users', async (req, res) => {
   try {
    await createDb()
-    // await client.connect();
+   await client.connect();
     console.log(findResult ,"result")
     res.json(findResult)
   }  catch (error) {

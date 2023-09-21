@@ -12,6 +12,10 @@ import {  StoreModule } from '@ngrx/store';
 import { reducerData } from './state/app.reducer';
 import { ChatService } from './services/chat/chat.service';
 import { HomepageComponent } from './components/homepage/homepage.component';
+import { AppEffects } from './state/app.effects';
+import { EffectsModule } from '@ngrx/effects';
+import { ErrorsPageComponent } from './components/errors-page/errors-page.component';
+import { ChatRoomWorkflowService } from './services/chat-room-workflow.service';
 
 @NgModule({
   declarations: [
@@ -20,6 +24,7 @@ import { HomepageComponent } from './components/homepage/homepage.component';
     RegisterComponent,
     ChatRoomComponent,
     HomepageComponent,
+    ErrorsPageComponent,
   ],
   imports: [
     BrowserModule,
@@ -28,9 +33,10 @@ import { HomepageComponent } from './components/homepage/homepage.component';
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-    StoreModule.forRoot({data:reducerData})
+    StoreModule.forRoot({data:reducerData}),
+    EffectsModule.forRoot([AppEffects])
   ],
-  providers: [ChatService],
+  providers: [ChatService,ChatRoomWorkflowService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

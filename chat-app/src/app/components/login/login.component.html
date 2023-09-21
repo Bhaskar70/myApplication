@@ -1,5 +1,4 @@
 
-  <app-chat-room *ngIf="showScreen" [currentUser]="currentUser" [selectedUser]="selectedUser" [userList]="userList" [mockUserList]="mockUserList"></app-chat-room>
   <ng-template #popup let-d="dismiss">
   
     <div class="modal-header">
@@ -27,31 +26,6 @@
   
     <div class="modal-footer">
       <button class="btn btn-sm btn-primary" (click)="login(d)">Login</button>
-    </div>
-  
-  </ng-template>
-  <ng-template #userNotFound let-r="dismiss">
-  
-    <div class="modal-header">
-      <h4 class="modal-title">Entered Mobile Number is not registered</h4>
-    </div>
-  
-    <div class="modal-body">
-  
-      <div class="row">
-        <div class="col-md-12">
-  
-          <div class="form-group">
-            Look like you don't have an account please register
-          </div>
-  
-        </div>
-      </div>
-  
-    </div>
-  
-    <div class="modal-footer blahblah">
-      <a routerLink="/register" (click)="r()">Click Here To Register</a>
     </div>
   
   </ng-template>
