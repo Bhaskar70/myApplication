@@ -29,19 +29,17 @@ export class ChatRoomComponent {
       this.currentUser = this.userList.find((user: any) => user.phone === phone.toString());
       this.userList = this.userList.filter((user: any) => user.phone !== phone.toString());
       this.mockUserList = this.userList
-      console.log(phone, "26:::")
     })
     this.chatService.getMessage().subscribe((data: { user: string, room: string, message: string }) => {
       if (this.roomId) {
-        setTimeout(() => {
-          //this.storageArray = this.chatService.getStorage();
+       setTimeout(() => {
           this.chatService.getChatData().subscribe((res) => {
             this.storageArray = res
             console.log(this.storageArray, "storageArray")
             const storeIndex = this.storageArray
               .findIndex((storage: any) => storage.roomId === this.roomId);
-            this.messageArray = this.storageArray[storeIndex].chats;
-          })
+            this.messageArray = this.storageArray[storeIndex]?.chats || [];
+         })
         }, 500);
       }
     });
@@ -52,13 +50,12 @@ export class ChatRoomComponent {
     this.selectedUser = this.userList.find((user: any) => user.phone === phone);
     this.roomId = this.selectedUser.roomId[this.currentUser.id];
     this.messageArray = [];
-    // this.storageArray = this.chatService.getStorage();
     this.chatService.getChatData().subscribe((res) => {
-      this.storageArray = res
+     this.storageArray = res
       const storeIndex = this.storageArray
         .findIndex((storage: any) => storage.roomId === this.roomId);
       if (storeIndex > -1) {
-        this.messageArray = this.storageArray[storeIndex].chats;
+        this.messageArray = this.storageArray[storeIndex]?.chats || [];
       }
   
       this.join(this.currentUser.name, this.roomId);
@@ -76,8 +73,8 @@ export class ChatRoomComponent {
       message: this.messageText
     });
 
-    //this.storageArray = this.chatService.getStorage();
     this.chatService.getChatData().subscribe((res) => {
+      console.log(res , "chats")
       this.storageArray = res
       const storeIndex = this.storageArray
         .findIndex((storage: any) => storage.roomId === this.roomId);
@@ -87,10 +84,8 @@ export class ChatRoomComponent {
           user: this.currentUser.name,
           message: this.messageText
         });
-        this.chatService.updateChats({
-          user: this.currentUser.name,
-          message: this.messageText
-        }).subscribe()
+        console.log(this.currentUser.name ,"update" , this.messageText)
+        this.chatService.updateChats(this.storageArray[storeIndex]).subscribe()
       } else {
         const updateStorage = {
           roomId: this.roomId,
@@ -99,12 +94,12 @@ export class ChatRoomComponent {
             message: this.messageText
           }]
         };
-        this.chatService.updateChats(updateStorage).subscribe()
+        console.log(updateStorage , "updateStorage")
+       this.chatService.updateChats(updateStorage).subscribe()
         this.storageArray.push(updateStorage);
       }
-    })
-    //   this.chatService.setStorage(this.storageArray);
-    this.messageText = '';
+      this.messageText = '';
+  })
   }
   searchUser(evt: any) {
     this.userList = this.mockUserList.filter((val: any) => {

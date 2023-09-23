@@ -20,6 +20,7 @@
 
 .searchBar {
     position: relative;
+
     .searchField {
         width: 100%;
         outline: none;
@@ -89,9 +90,53 @@
             }
         }
     }
+
     .pic {
         width: 57%;
     }
-    
 
+
+}
+
+.chat-container {
+    .chat-header {
+        display: flex;
+        margin-bottom: 10px;
+        border-bottom: 1px dotted;
+        background-color: #e3e6e8;
+        justify-content: space-between;
+        color: white;
+        background: blue;
+        padding: 2px 5px;
+        .username {
+            margin-top: 10px;
+            margin-bottom: 0px;
+            font-family: cursive;
+        }
+
+        .iconActivity {
+            display: flex;
+            width: 10%;
+            justify-content: space-around;
+            align-items: center;
+            
+            i:hover {
+                font-size: x-large;
+            }
+        }
+
+    }
+    .chat-footer {
+        .row{
+            .mine {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0px;
+            }
+            .text-center {
+                text-align: end !important;
+            }
+        }
+    }
 }

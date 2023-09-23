@@ -31,9 +31,16 @@
       <div class="chat-container">
         <ng-container *ngIf="selectedUser">
           <div class="chat-header">
-
+            <div class="d-flex">
             <img [src]="selectedUser?.image" [alt]="selectedUser?.name" class="avatar" />
             <p class="username">{{selectedUser?.name}}</p>
+            </div>
+
+            <div class="iconActivity">
+              <i class="bi bi-camera-video-fill"></i>
+              <i class="bi bi-telephone-fill"></i>
+              <i class="bi bi-three-dots-vertical"></i>
+            </div>
 
           </div>
 
@@ -48,13 +55,17 @@
           <div class="chat-footer" *ngIf="selectedUser">
 
             <div class="row">
-              <div class="col-md-10">
+              <div class="col-md-9">
                 <div class="form-group mb-0">
                   <input type="text" placeholder="Type a message" class="form-control" [(ngModel)]="messageText"
                     (keyup)="$event.keyCode === 13 && sendMessage()" />
                 </div>
               </div>
-
+              <div class="col-md-1 d-flex mine">
+                <i class="bi bi-mic"></i>
+                <i class="bi bi-camera"></i>
+                <i class="bi bi-file-image"></i>
+              </div>
               <div class="col-md-2 text-center align-self-center">
                 <button class="btn btn-primary btn-sm px-3" (click)="sendMessage()">Send
                 </button>
