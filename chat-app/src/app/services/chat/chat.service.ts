@@ -8,7 +8,7 @@ import { io, Socket } from 'socket.io-client';
 })
 export class ChatService {
   private socket: Socket;
-  private url = 'http://localhost:3000'; // your server local path
+  private url = 'http://192.168.10.16:3000'; // your server local path
 
 
   constructor(private http :HttpClient) {
@@ -52,10 +52,19 @@ export class ChatService {
     localStorage.setItem('chats', JSON.stringify(data));
   }
  getChatData(){
-  return this.http.get(`${this.url}/api/users`)
+  return this.http.get(`${this.url}/api/chats`)
  }
-
+ 
  updateChats(data:any){
-  return this.http.post(`${this.url}/api/update`, data)
+  return this.http.post(`${this.url}/api/update/chats`, data)
+ }
+ getRegisterData(){
+  return this.http.get(`${this.url}/api/register`)
+ }
+ updateRegisterData(data:any){
+  return this.http.post(`${this.url}/api/update/register`, data)
+ }
+ updateRoomId(data:any){
+  return this.http.post(`${this.url}/api/update/roomid`, data)
  }
 }

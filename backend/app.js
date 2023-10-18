@@ -1,5 +1,6 @@
 let express = require('express');
 let app = express();
+const mongoose = require('mongoose');
 
 const { MongoClient } = require('mongodb');
 const bodyParser = require('body-parser');
@@ -15,15 +16,26 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(cors());
 
+const yourSchema = new mongoose.Schema({
+  id: Number,
+  name: String,
+  phone: Number,
+  image: String,
+  roomId: Object
+});
+
 
 const uri = 'mongodb+srv://bhaskar:r123r456@cluster0.pym3mcr.mongodb.net/?retryWrites=true&w=majority';
 const client = new MongoClient(uri);
-var db, collection, findResult, chatExists;
+var db, collection, findResult, userDataCollection, findUserData;
 async function createDb() {
   await client.connect();
-  db = client.db("todoappdb");
-  collection = db.collection('todoappcollection');
+  db = client.db("chatAppdb");
+  userDataCollection = db.collection('userDataCollection', yourSchema)
+  collection = db.collection('chatDataCollection');
   findResult = await collection.find({}).toArray();
+  findUserData = await userDataCollection.find({}).toArray();
+
 }
 // SOCKET  CONNECTION 
 
@@ -37,7 +49,7 @@ io.on('connection', (socket) => {
     io.in(data.room).emit('new message', { user: data.user, message: data.message });
   });
 });
-server.listen(port, () => {
+server.listen(port, '192.168.10.16', () => {
   console.log(`started on port: ${port}`);
 });
 
@@ -45,7 +57,7 @@ server.listen(port, () => {
 
 // API CALL WITH MONGODB DATA 
 
-app.get('/api/users', async (req, res) => {
+app.get('/api/chats', async (req, res) => {
   try {
     await createDb()
     await client.connect();
@@ -57,15 +69,14 @@ app.get('/api/users', async (req, res) => {
 
 // API POST CALL TO UPDATE MONGO DB DATA
 
-app.post('/api/update', async (req, res) => {
+app.post('/api/update/chats', async (req, res) => {
   try {
     await createDb()
     let dataUpdate = findResult.filter(res => res && res.roomId == req.body.roomId)
-    console.log(dataUpdate, "updateData")
-    if (dataUpdate.length) {
-      console.log(req.body.chats, "chats")
-      const filter = { roomId : { $gte: req.body.roomId } }; 
-      const update = { $set: { chats: req.body.chats } }; 
+    if (dataUpdate.length && dataUpdate[0].roomId === req.body.roomId) {
+      console.log(dataUpdate[0].roomId, "64::::", req.body.roomId)
+      const filter = { roomId: { $gte: req.body.roomId } };
+      const update = { $set: { chats: req.body.chats } };
       chatExists = true
       collection.updateOne(filter, update, (err, result) => {
         if (err) {
@@ -84,6 +95,62 @@ app.post('/api/update', async (req, res) => {
     }
 
     res.json(req.body)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
+//  API CALL TO GET REGISTER DATA
+
+app.get('/api/register', async (req, res) => {
+  try {
+    await createDb()
+    await client.connect();
+    res.json(findUserData)
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// API CALL TO UPDATE REGISTER DATA
+
+app.post('/api/update/register', async (req, res) => {
+  try {
+    await createDb()
+      let dataUpdate = findUserData.filter(res => res && res.phone == req.body.phone)
+      if (dataUpdate.length) {
+        res.json({ valid: false });
+      } else {
+        userDataCollection.insertOne(req.body, function (err, res) {
+          if (err) throw err;
+          console.log("1 document inserted");
+          db.close();
+        })
+        res.json({ valid: true });
+      }
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
+app.post('/api/update/roomid', async (req, res) => {
+  try {
+    await createDb()
+    findUserData.forEach((val, i) => {
+      if (val.phone == req.body[i].phone) {
+        console.log(val.phone, '141:::', req.body[i].phone)
+        const filter = { phone: { $gte: req.body[i].phone } };
+        const update = { $set: { roomId: req.body[i].roomId } };
+        userDataCollection.updateOne(filter, update, (err, result) => {
+          if (err) {
+            console.error('Error updating documents:', err);
+          } else {
+            console.log('Documents updated:', result.modifiedCount);
+          }
+        });
+      }
+    })
+    res.json({status : 'sucessful'})
   } catch (error) {
     res.status(500).json({ error: error.message })
   }

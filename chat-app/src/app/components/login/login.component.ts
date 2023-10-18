@@ -57,8 +57,9 @@ export class LoginComponent {
 
   login(dismiss: any): void {
     this.currentUser = this.userList.find((user:any) => user.phone === this.phone.toString());
+    console.log(this.currentUser , this.userList , "59:::",this.phone)
       this.showScreen = true;
-      this.store.dispatch(mobileNumber({mobileNo : this.phone}))
+      this.store.dispatch(mobileNumber({mobileNo : this.phone.toString()}))
       this.router.navigate(['chat-room'])
        dismiss();
    

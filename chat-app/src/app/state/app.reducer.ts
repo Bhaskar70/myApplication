@@ -8,7 +8,7 @@ export const initialState = {
 const reducer = createReducer(
     initialState,
     on(userData, (state: any, action: any) => ({ ...state, data: action.data })), 
-    on(mobileNumber , (state:any , action :any) => ({ ...state , mobileNo : action.mobileNo }))
+    on(mobileNumber, (state:any , action :any) => ({ ...state , mobileNo : action.mobileNo }))
 )
 export function reducerData(state: any, action: any) {
     return reducer(state, action)
