@@ -127,6 +127,10 @@
 
     }
     .chat-footer {
+        position: sticky;
+        bottom: 0px;
+        background-color: #eaeaea;
+        padding: 5px 0px;
         .row{
             .mine {
                 display: flex;

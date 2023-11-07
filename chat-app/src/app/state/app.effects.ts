@@ -12,23 +12,23 @@ import { Data } from "./data";
 export class AppEffects {
     constructor(private action$: Actions, private service: ChatService) { }
 
-    // loadUserData$ = createEffect(()=> this.action$.pipe(
-    //     ofType(setUserData),
-    //     map(() => {
-    //          console.log(this.service.getUserData())
-    //          this.service.getUserData().length ? '' : localStorage.setItem("userData", JSON.stringify(Data)) 
-    //          return this.service.getUserData().length ? userData({data :this.service.getUserData()}) : userData({data :Data})
-    //     })
-    // ))
-    // }
-    loadUserData$ = createEffect(() => this.action$.pipe(
+    loadUserData$ = createEffect(()=> this.action$.pipe(
         ofType(setUserData),
-        concatMap(() =>
-            this.service.getRegisterData().pipe(map((res: any) => {
-                console.log(res,"28::::")
-                return res.length ? userData({ data: res.map(({ _id, ...rest }: any) => rest) }) : userData({ data: [] })
-            })
-            ))
-    )
-    )
+        concatMap(() => {
+             return this.service.getRegisterData().pipe(map((res=>{
+                return userData({data: JSON.parse(JSON.stringify(res))})
+             })))
+        })
+    ))
+    
+    // loadUserData$ = createEffect(() => this.action$.pipe(
+    //     ofType(setUserData),
+    //     concatMap(() =>
+    //         this.service.getRegisterData().pipe(map((res: any) => {
+    //             console.log(res,"28::::")
+    //             return res.length ? userData({ data: res.map(({ _id, ...rest }: any) => rest) }) : userData({ data: [] })
+    //         })
+    //         ))
+    // )
+    // )
 }

@@ -42,17 +42,19 @@ export class RegisterComponent {
       let obj: any = {}
       for (let i = 1; i < this.loginData.length + 1; i++) {
         if (i !== this.loginData.length + 1) {
+          console.log(this.loginData.length , i, "45::::")
           obj[i] = `room-${(this.loginData.length) * 2 + i}`
         }
       }
+      console.log(obj , "48::::")
       if(this.loginData.length){
         Object.keys(obj).forEach((val, i) => {
-           console.log(this.loginData[i].roomId)
+           console.log(val , i, "51::::")
            this.loginData[i].roomId[this.loginData.length + 1] = obj[val]
           })
-        this.service.updateRoomId(this.loginData).subscribe()
-        console.log(this.loginData, "5555%%%", obj)
+         this.service.updateRoomId(obj).subscribe()
       }
+
       let data = {
         id: this.loginData.length + 1,
         name: this.registerData.get('name')?.value,
@@ -60,8 +62,10 @@ export class RegisterComponent {
         image: this.url,
         roomId: obj
       }
-      //this.loginData.push(data)
+      this.loginData.push(data)
+      console.log(this.loginData, "5555%%%", obj)
      this.service.updateRegisterData(data).subscribe()
+    localStorage.setItem('userData' , this.loginData)
      this.openPopup(this.registered)
   }
   //  images selction change

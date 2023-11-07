@@ -69,12 +69,6 @@ export class ChatRoomComponent {
   }
 
   sendMessage(): void {
-    this.chatService.sendMessage({
-      user: this.currentUser.name,
-      room: this.roomId,
-      message: this.messageText
-    });
-
     this.chatService.getChatData().subscribe((res) => {
       console.log(res, "chats")
       this.storageArray = res
@@ -86,8 +80,17 @@ export class ChatRoomComponent {
           user: this.currentUser.name,
           message: this.messageText
         });
+
+        const newMessage = {
+          _id : this.storageArray[storeIndex]._id,
+          roomId :this.roomId ,
+          message : {
+            user: this.currentUser.name,
+            message: this.messageText
+          }
+        }
         console.log(this.currentUser.name, "update", this.messageText)
-        this.chatService.updateChats(this.storageArray[storeIndex]).subscribe()
+        this.chatService.updateChats(newMessage).subscribe()
       } else {
         const updateStorage = {
           roomId: this.roomId,
@@ -101,6 +104,11 @@ export class ChatRoomComponent {
         this.storageArray.push(updateStorage);
       }
       this.messageText = '';
+      this.chatService.sendMessage({
+        user: this.currentUser.name,
+        room: this.roomId,
+        message: this.messageText
+      });
     })
   }
   searchUser(evt: any) {
