@@ -132,7 +132,7 @@
     padding: 0px;
     .chat-container {
         background-image: url('../../../assets/user/background.png');
-
+        box-shadow: 0px 0px 2px;
         .chat-header {
             color :#111b21;
             display: flex;
@@ -186,8 +186,8 @@
 
 .chat-body {
     overflow: auto;
-    max-height: 464px;
-    min-height: 464px;
+    max-height: 460px;
+    min-height: 460px;
 
     .chat-scroll {
         display: flex;

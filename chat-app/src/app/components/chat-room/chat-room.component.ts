@@ -23,8 +23,8 @@ export class ChatRoomComponent {
   mockUserList: any;
   ngOnInit() {
     this.store.select(UserData).subscribe((userdata) => {
-      this.userList =  userdata
-      console.log(this.userList ,"27:::::")
+      this.userList = userdata
+      console.log(this.userList, "27:::::")
     })
     this.store.select(getMobileNumber).subscribe((phone: any) => {
       this.currentUser = this.userList.find((user: any) => user.phone === phone.toString());
@@ -74,41 +74,42 @@ export class ChatRoomComponent {
       this.storageArray = res
       const storeIndex = this.storageArray
         .findIndex((storage: any) => storage.roomId === this.roomId);
+      if (this.messageText.trim().length) {
+        if (storeIndex > -1) {
+          this.storageArray[storeIndex].chats.push({
+            user: this.currentUser.name,
+            message: this.messageText
+          });
 
-      if (storeIndex > -1) {
-        this.storageArray[storeIndex].chats.push({
+          const newMessage = {
+            _id: this.storageArray[storeIndex]._id,
+            roomId: this.roomId,
+            message: {
+              user: this.currentUser.name,
+              message: this.messageText
+            }
+          }
+          console.log(this.currentUser.name, "update", this.messageText)
+          this.chatService.updateChats(newMessage).subscribe()
+        } else {
+          const updateStorage = {
+            roomId: this.roomId,
+            chats: [{
+              user: this.currentUser.name,
+              message: this.messageText
+            }]
+          };
+          console.log(updateStorage, "updateStorage")
+          this.chatService.updateChats(updateStorage).subscribe()
+          this.storageArray.push(updateStorage);
+        }
+        this.chatService.sendMessage({
           user: this.currentUser.name,
+          room: this.roomId,
           message: this.messageText
         });
-
-        const newMessage = {
-          _id : this.storageArray[storeIndex]._id,
-          roomId :this.roomId ,
-          message : {
-            user: this.currentUser.name,
-            message: this.messageText
-          }
-        }
-        console.log(this.currentUser.name, "update", this.messageText)
-        this.chatService.updateChats(newMessage).subscribe()
-      } else {
-        const updateStorage = {
-          roomId: this.roomId,
-          chats: [{
-            user: this.currentUser.name,
-            message: this.messageText
-          }]
-        };
-        console.log(updateStorage, "updateStorage")
-        this.chatService.updateChats(updateStorage).subscribe()
-        this.storageArray.push(updateStorage);
       }
       this.messageText = '';
-      this.chatService.sendMessage({
-        user: this.currentUser.name,
-        room: this.roomId,
-        message: this.messageText
-      });
     })
   }
   searchUser(evt: any) {
