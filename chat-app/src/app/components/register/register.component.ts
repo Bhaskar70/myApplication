@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import { ChatService } from 'src/app/services/chat/chat.service';
 import { setUserData } from 'src/app/state/app.action';
 import { UserData } from 'src/app/state/app.selector';
-
+import { v4 as uuidv4 } from 'uuid';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -42,8 +42,7 @@ export class RegisterComponent {
       let obj: any = {}
       for (let i = 1; i < this.loginData.length + 1; i++) {
         if (i !== this.loginData.length + 1) {
-          console.log(this.loginData.length , i, "45::::")
-          obj[i] = `room-${(this.loginData.length) * 2 + i}`
+          obj[i] = `room-${(uuidv4())}`
         }
       }
       console.log(obj , "48::::")

@@ -170,32 +170,19 @@ app.post('/api/update/roomid', async (req, res) => {
     await createDb()
     if(findUserData.length){
       Object.keys(req.body).forEach((val, i)=>{
-        // const filter = {id : {$gte : i}}
-        // const dynamicKey = `roomId.${findUserData.length+1}`;
-        console.log(val ,i ,"111")
-        //  const update = { $set: { [dynamicKey]: req.body[val] } };
-        //  userDataCollection.updateOne(filter, update, (err, result) => {
-        //   if (err) {
-        //     console.error('Error updating documents:', err);
-        //   } else {
-        //     console.log('Documents updated:', result.modifiedCount);
-        //   }
-        // });
+         const filter = {id : Number(val)}
+         const dynamicKey = `roomId.${findUserData.length+1}`;
+        console.log(req.body[val] , val ,"111" , findUserData.length +1)
+         const update = { $set: { [dynamicKey]: req.body[val] } };
+         userDataCollection.updateOne(filter, update, (err, result) => {
+          if (err) {
+            console.error('Error updating documents:', err);
+          } else {
+            console.log('Documents updated:', result.modifiedCount);
+          }
+        });
       })
     }
-    // findUserData.forEach((val) => {
-    //   const filter = { id: { $gte: val.id } };
-      // const dynamicKey = `roomId.${findUserData.length}`;
-      // console.log(req.body[val.id] , val.roomId ,'187:::' , dynamicKey , val.id)
-      //  const update = { $set: { [dynamicKey]: req.body[val.id] } };
-      // userDataCollection.updateOne(filter, update, (err, result) => {
-      //   if (err) {
-      //     console.error('Error updating documents:', err);
-      //   } else {
-      //     console.log('Documents updated:', result.modifiedCount);
-      //   }
-      // });
-    // });
     res.json({})
   } catch (error) {
     res.status(500).json({ error: error.message })
