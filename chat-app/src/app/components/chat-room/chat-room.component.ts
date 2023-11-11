@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { ChatService } from 'src/app/services/chat/chat.service';
+import { setUserData } from 'src/app/state/app.action';
 import { UserData, getMobileNumber } from 'src/app/state/app.selector';
 
 @Component({
@@ -22,6 +23,7 @@ export class ChatRoomComponent {
   userList: any;
   mockUserList: any;
   ngOnInit() {
+    
     this.store.select(UserData).subscribe((userdata) => {
       this.userList = userdata
       console.log(this.userList, "27:::::")

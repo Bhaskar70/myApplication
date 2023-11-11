@@ -10,6 +10,7 @@ let http = require('http');
 let server = http.Server(app);
 
 let socketIO = require('socket.io');
+const { register } = require('module');
 let io = socketIO(server);
 
 const port = process.env.PORT || 3000;
@@ -40,6 +41,7 @@ async function createDb() {
 // SOCKET  CONNECTION 
 
 io.on('connection', (socket) => {
+  console.log('connnet to socket')
   socket.on('join', (data) => {
     socket.join(data.room);
     socket.broadcast.to(data.room).emit('user joined');
@@ -48,6 +50,9 @@ io.on('connection', (socket) => {
   socket.on('message', (data) => {
     io.in(data.room).emit('new message', { user: data.user, message: data.message });
   });
+  socket.on('register' , (data) => {
+    io.in(data.room).emit('new user' , { phone: data.phone })
+  })
 });
 server.listen(port, '192.168.10.16', () => {
   console.log(`started on port: ${port}`);
@@ -66,41 +71,6 @@ app.get('/api/chats', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-// API POST CALL TO UPDATE MONGO DB DATA
-
-// app.post('/api/update/chats', async (req, res) => {
-//   try {
-//     await createDb()
-//     let dataUpdate = findResult.filter(res => res && res.roomId == req.body.roomId)
-//     if (dataUpdate.length && dataUpdate[0].roomId === req.body.roomId) {
-//       console.log(dataUpdate[0].roomId, "64::::", req.body.roomId)
-//       const filter = { roomId: { $gte: req.body.roomId } };
-//       const update = { $set: { chats: req.body.chats } };
-//       chatExists = true
-//       collection.updateOne(filter, update, (err, result) => {
-//         if (err) {
-//           console.error('Error updating documents:', err);
-//         } else {
-//           console.log('Documents updated:', result.modifiedCount);
-//         }
-//       });
-
-//     } else {
-//       collection.insertOne(req.body, function (err, res) {
-//         if (err) throw err;
-//         console.log("1 document inserted");
-//         db.close();
-//       })
-//     }
-
-//     res.json(req.body)
-//   } catch (error) {
-//     res.status(500).json({ error: error.message })
-//   }
-// })
-
-
 
 app.post('/api/update/chats', async (req, res) => {
   try {

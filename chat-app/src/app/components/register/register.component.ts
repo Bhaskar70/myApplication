@@ -28,7 +28,9 @@ export class RegisterComponent {
     })
   }
   ngOnInit() {
+    this.service.registerPage('register')
     this.store.dispatch(setUserData())
+    
   }
   openPopup(content: any): void {
     this.modalService.open(content, { backdrop: 'static', centered: true });
@@ -38,34 +40,38 @@ export class RegisterComponent {
     this.store.select(UserData).subscribe((res) => {
       this.loginData = JSON.parse(JSON.stringify(res))
     })
-      console.log(this.loginData, "1111")
-      let obj: any = {}
-      for (let i = 1; i < this.loginData.length + 1; i++) {
-        if (i !== this.loginData.length + 1) {
-          obj[i] = `room-${(uuidv4())}`
-        }
+    console.log(this.loginData, "1111")
+    let obj: any = {}
+    for (let i = 1; i < this.loginData.length + 1; i++) {
+      if (i !== this.loginData.length + 1) {
+        obj[i] = `room-${(uuidv4())}`
       }
-      console.log(obj , "48::::")
-      if(this.loginData.length){
-        Object.keys(obj).forEach((val, i) => {
-           console.log(val , i, "51::::")
-           this.loginData[i].roomId[this.loginData.length + 1] = obj[val]
-          })
-         this.service.updateRoomId(obj).subscribe()
-      }
+    }
+    console.log(obj, "48::::")
+    if (this.loginData.length) {
+      Object.keys(obj).forEach((val, i) => {
+        console.log(val, i, "51::::")
+        this.loginData[i].roomId[this.loginData.length + 1] = obj[val]
+      })
+      this.service.updateRoomId(obj).subscribe()
+    }
 
-      let data = {
-        id: this.loginData.length + 1,
-        name: this.registerData.get('name')?.value,
-        phone: this.registerData.get('phone')?.value,
-        image: this.url,
-        roomId: obj
-      }
-      this.loginData.push(data)
-      console.log(this.loginData, "5555%%%", obj)
-     this.service.updateRegisterData(data).subscribe()
-    localStorage.setItem('userData' , this.loginData)
-     this.openPopup(this.registered)
+    let data = {
+      id: this.loginData.length + 1,
+      name: this.registerData.get('name')?.value,
+      phone: this.registerData.get('phone')?.value,
+      image: this.url,
+      roomId: obj
+    }
+    this.loginData.push(data)
+    console.log(this.loginData, "5555%%%", obj)
+    this.service.updateRegisterData(data).subscribe()
+    this.service.newUser({
+      user: data.name,
+      room:data.roomId,
+      phone: data.phone
+    })
+    this.openPopup(this.registered)
   }
   //  images selction change
 

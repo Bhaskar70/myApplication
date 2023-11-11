@@ -72,3 +72,35 @@ app.post('/api/update', async(req , res )=>{
   }
 })
 
+// API POST CALL TO UPDATE MONGO DB DATA
+
+// app.post('/api/update/chats', async (req, res) => {
+//   try {
+//     await createDb()
+//     let dataUpdate = findResult.filter(res => res && res.roomId == req.body.roomId)
+//     if (dataUpdate.length && dataUpdate[0].roomId === req.body.roomId) {
+//       console.log(dataUpdate[0].roomId, "64::::", req.body.roomId)
+//       const filter = { roomId: { $gte: req.body.roomId } };
+//       const update = { $set: { chats: req.body.chats } };
+//       chatExists = true
+//       collection.updateOne(filter, update, (err, result) => {
+//         if (err) {
+//           console.error('Error updating documents:', err);
+//         } else {
+//           console.log('Documents updated:', result.modifiedCount);
+//         }
+//       });
+
+//     } else {
+//       collection.insertOne(req.body, function (err, res) {
+//         if (err) throw err;
+//         console.log("1 document inserted");
+//         db.close();
+//       })
+//     }
+
+//     res.json(req.body)
+//   } catch (error) {
+//     res.status(500).json({ error: error.message })
+//   }
+// })

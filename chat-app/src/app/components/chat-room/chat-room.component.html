@@ -56,8 +56,8 @@
 
           <div class="chat-footer" *ngIf="selectedUser">
 
-            <div class="row">
-              <div class="col-md-9">
+            <div class="row justify-content-around">
+              <div class="col-md-8">
                 <div class="form-group mb-0">
                   <input type="text" placeholder="Type a message" class="form-control" [(ngModel)]="messageText"
                     (keyup)="$event.keyCode === 13 && sendMessage()" />
