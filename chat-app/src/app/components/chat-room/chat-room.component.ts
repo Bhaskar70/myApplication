@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { ChatService } from 'src/app/services/chat/chat.service';
-import { setUserData } from 'src/app/state/app.action';
+import { mobileNumber, setUserData } from 'src/app/state/app.action';
 import { UserData, getMobileNumber } from 'src/app/state/app.selector';
 
 @Component({
@@ -23,16 +23,23 @@ export class ChatRoomComponent {
   userList: any;
   mockUserList: any;
   ngOnInit() {
-    
+    this.chatService.getNewUser().subscribe((res => {
+     this.store.dispatch(setUserData())
+    }))
     this.store.select(UserData).subscribe((userdata) => {
       this.userList = userdata
+      if(this.currentUser){
+        this.mockUserList = this.userList.filter((user: any) => user.phone !== this.currentUser.phone.toString());
+      }
       console.log(this.userList, "27:::::")
     })
     this.store.select(getMobileNumber).subscribe((phone: any) => {
-      this.currentUser = this.userList.find((user: any) => user.phone === phone.toString());
-      console.log(this.userList, "30::", phone)
-      this.userList = this.userList.filter((user: any) => user.phone !== phone.toString());
-      this.mockUserList = this.userList
+      if (phone) {
+        this.currentUser = this.userList.find((user: any) => user.phone === phone.toString());
+        console.log(this.userList, "30::", phone)
+        this.userList = this.userList.filter((user: any) => user.phone !== phone.toString());
+        this.mockUserList = this.userList
+      }
     })
     this.chatService.getMessage().subscribe((data: { user: string, room: string, message: string }) => {
       if (this.roomId) {

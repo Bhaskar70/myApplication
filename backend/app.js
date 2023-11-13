@@ -46,15 +46,15 @@ io.on('connection', (socket) => {
     socket.join(data.room);
     socket.broadcast.to(data.room).emit('user joined');
   });
-
+  
   socket.on('message', (data) => {
     io.in(data.room).emit('new message', { user: data.user, message: data.message });
   });
   socket.on('register' , (data) => {
-    io.in(data.room).emit('new user' , { phone: data.phone })
+    io.emit('new user' , { phone: data.phone })
   })
 });
-server.listen(port, '192.168.10.16', () => {
+server.listen(port, '192.168.125.119', () => {
   console.log(`started on port: ${port}`);
 });
 

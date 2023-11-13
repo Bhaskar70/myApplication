@@ -8,7 +8,7 @@ import { io, Socket } from 'socket.io-client';
 })
 export class ChatService {
   private socket: Socket;
-  private url = 'http://192.168.10.16:3000'; // your server local path
+  private url = 'http://192.168.125.119:3000'; // your server local path
 
 
   constructor(private http: HttpClient) {
@@ -22,9 +22,6 @@ export class ChatService {
 
   joinRoom(data: any): void {
     this.socket.emit('join', data);
-  }
-  registerPage(data: any): void {
-    this.socket.emit('registerPage', data);
   }
   sendMessage(data: any): void {
     console.log(data , "new message")

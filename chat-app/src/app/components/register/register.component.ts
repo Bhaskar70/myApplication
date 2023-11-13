@@ -28,7 +28,6 @@ export class RegisterComponent {
     })
   }
   ngOnInit() {
-    this.service.registerPage('register')
     this.store.dispatch(setUserData())
     
   }
@@ -36,7 +35,7 @@ export class RegisterComponent {
     this.modalService.open(content, { backdrop: 'static', centered: true });
   }
   RegisterForm() {
-    this.store.dispatch(setUserData())
+    // this.store.dispatch(setUserData())
     this.store.select(UserData).subscribe((res) => {
       this.loginData = JSON.parse(JSON.stringify(res))
     })
@@ -68,7 +67,7 @@ export class RegisterComponent {
     this.service.updateRegisterData(data).subscribe()
     this.service.newUser({
       user: data.name,
-      room:data.roomId,
+      room:'register',
       phone: data.phone
     })
     this.openPopup(this.registered)
