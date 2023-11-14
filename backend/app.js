@@ -54,7 +54,7 @@ io.on('connection', (socket) => {
     io.emit('new user' , { phone: data.phone })
   })
 });
-server.listen(port, '192.168.125.119', () => {
+server.listen(port, '192.168.10.16', () => {
   console.log(`started on port: ${port}`);
 });
 

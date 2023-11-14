@@ -24,11 +24,13 @@ export class ChatRoomComponent {
   mockUserList: any;
   ngOnInit() {
     this.chatService.getNewUser().subscribe((res => {
-     this.store.dispatch(setUserData())
+      setTimeout(() => {
+        this.store.dispatch(setUserData())
+      }, 500);
     }))
     this.store.select(UserData).subscribe((userdata) => {
       this.userList = userdata
-      if(this.currentUser){
+      if (this.currentUser) {
         this.mockUserList = this.userList.filter((user: any) => user.phone !== this.currentUser.phone.toString());
       }
       console.log(this.userList, "27:::::")
