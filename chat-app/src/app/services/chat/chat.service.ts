@@ -88,4 +88,7 @@ export class ChatService {
   updateRoomId(data: any) {
     return this.http.post(`${this.url}/api/update/roomid`, data)
   }
+  markAsRead(data:any){
+  return this.http.post(`${this.url}/api/markasread`, data)
+  }
 }

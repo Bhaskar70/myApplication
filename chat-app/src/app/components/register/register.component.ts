@@ -15,7 +15,7 @@ import { v4 as uuidv4 } from 'uuid';
 })
 export class RegisterComponent {
   @ViewChild('registered') registered: any;
-  registerData: FormGroup
+  registerData!: FormGroup
   array: any;
   loginData: any;
   constructor(private fb: FormBuilder, private service: ChatService,
@@ -60,7 +60,8 @@ export class RegisterComponent {
       name: this.registerData.get('name')?.value,
       phone: this.registerData.get('phone')?.value,
       image: this.url,
-      roomId: obj
+      roomId: obj,
+      newMessage:0
     }
     this.loginData.push(data)
     console.log(this.loginData, "5555%%%", obj)

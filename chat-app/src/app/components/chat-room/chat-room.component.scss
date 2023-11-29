@@ -57,6 +57,9 @@
                     padding: 6px;
                     padding-left: 10px;
                     margin: 14px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
 
                     &:hover {
                         background-color: #f0f2f5;
@@ -66,6 +69,24 @@
                         background-color: green;
                     }
 
+                    .username {
+                        display: block;
+                    }
+
+                    .unread-msg-contaniner {
+                        width: 24px;
+
+                        .unreadmsg {
+                            border-radius: 30px;
+                            display: block;
+                            width: 18px;
+                            height: 17px;
+                            background: green;
+                            text-align: center;
+                            color: white;
+                            font-size: 11px;
+                        }
+                    }
                 }
 
                 &::-webkit-scrollbar {
@@ -163,6 +184,9 @@
                                     margin: auto;
                                     word-break: break-word;
                                     max-width: 400px;
+                                    .read{
+                                        color: blue;
+                                    }
                                 }
                             }
                         }

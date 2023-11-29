@@ -48,7 +48,7 @@ io.on('connection', (socket) => {
   });
   
   socket.on('message', (data) => {
-    io.in(data.room).emit('new message', { user: data.user, message: data.message });
+    io.emit('new message', { user: data.user, room : data.room, message: data.message });
   });
   socket.on('register' , (data) => {
     io.emit('new user' , { phone: data.phone })
@@ -153,6 +153,28 @@ app.post('/api/update/roomid', async (req, res) => {
         });
       })
     }
+    res.json({})
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// mark all read
+
+app.post('/api/markasread', async (req, res) => {
+  try {
+    await createDb()
+    console.log(req.body , "123:::")
+    const {roomId , user } = req.body
+    collection.updateMany(
+      { roomId  : roomId},
+      { $set: { 'chats.$[elem].read': true } },
+      { arrayFilters: [{ 'elem.user': user }] } , function (err, res) {
+        if (err) throw err;
+        console.log("1 document inserted");
+        db.close();
+      }
+    )
     res.json({})
   } catch (error) {
     res.status(500).json({ error: error.message })

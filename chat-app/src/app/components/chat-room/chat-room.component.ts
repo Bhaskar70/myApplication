@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { ChatService } from 'src/app/services/chat/chat.service';
+import { VoiceRecognitionService } from 'src/app/services/voice-recognition.service';
 import { mobileNumber, setUserData } from 'src/app/state/app.action';
 import { UserData, getMobileNumber } from 'src/app/state/app.selector';
 
@@ -13,7 +14,7 @@ import { UserData, getMobileNumber } from 'src/app/state/app.selector';
 export class ChatRoomComponent {
   public roomId: string = '';
   public messageText: string = '';
-  public messageArray: { user: string, message: string }[] = [];
+  public messageArray: { user: string, message: string, time: string, read: boolean }[] = [];
   storageArray: any = [];
 
   public showScreen = false;
@@ -22,6 +23,7 @@ export class ChatRoomComponent {
   selectedUser: any;
   userList: any;
   mockUserList: any;
+  speech: boolean = false;
   ngOnInit() {
     this.chatService.getNewUser().subscribe((res => {
       setTimeout(() => {
@@ -29,41 +31,72 @@ export class ChatRoomComponent {
       }, 500);
     }))
     this.store.select(UserData).subscribe((userdata) => {
-      this.userList = userdata
+      this.userList = JSON.parse(JSON.stringify(userdata))
       if (this.currentUser) {
         this.mockUserList = this.userList.filter((user: any) => user.phone !== this.currentUser.phone.toString());
       }
-      console.log(this.userList, "27:::::")
     })
     this.store.select(getMobileNumber).subscribe((phone: any) => {
       if (phone) {
         this.currentUser = this.userList.find((user: any) => user.phone === phone.toString());
-        console.log(this.userList, "30::", phone)
         this.userList = this.userList.filter((user: any) => user.phone !== phone.toString());
         this.mockUserList = this.userList
       }
     })
     this.chatService.getMessage().subscribe((data: { user: string, room: string, message: string }) => {
-      if (this.roomId) {
-        setTimeout(() => {
-          this.chatService.getChatData().subscribe((res) => {
-            this.storageArray = res
+     console.log(this.selectedUser , "321:::")
+      if(this.selectedUser){
+       this.chatService.markAsRead({user : this.selectedUser.name , roomId : this.roomId}).subscribe()
+     }
+      setTimeout(() => {
+        this.chatService.getChatData().subscribe((res) => {
+          this.storageArray = res
+          if (this.roomId) {
             console.log(this.storageArray, "storageArray")
             const storeIndex = this.storageArray
               .findIndex((storage: any) => storage.roomId === this.roomId);
             this.messageArray = this.storageArray[storeIndex]?.chats || [];
+          }
+          console.log(this.currentUser.roomId, "current-rooms")
+          if(!this.selectedUser || this.selectedUser?.name !== data.user){
+          Object.keys(this.currentUser.roomId).forEach((val: any) => {
+           if(this.currentUser.roomId[val] === data.room){
+            this.mockUserList.filter((res:any , i:any)=> {
+              if(res.name === data.user){
+                const index = this.storageArray
+                .findIndex((storage: any) => storage.roomId === data.room);
+                let unreadmsg = this.storageArray[index]?.chats.filter((chat: any) =>chat.user !== this.currentUser.name && !chat.read)
+               console.log(unreadmsg , "unreadmsgs")
+                this.mockUserList[i].newMessage = unreadmsg.length
+                }
+           })
+          }
           })
-        }, 500);
-      }
+        }
+        })
+      }, 500);
     });
   }
 
-  constructor(private chatService: ChatService, private store: Store) { }
+  constructor(private chatService: ChatService, private store: Store, private service: VoiceRecognitionService
+  ) {
+    this.service.init()
+  }
   selectUserHandler(phone: string): void {
     this.selectedUser = this.userList.find((user: any) => user.phone === phone);
     this.roomId = this.selectedUser.roomId[this.currentUser.id];
     this.messageArray = [];
+    this.chatService.markAsRead({user : this.selectedUser.name , roomId : this.roomId}).subscribe()
+    this.chatService.sendMessage({
+      user: this.currentUser.name,
+      room: this.roomId,
+      message: this.messageText,
+      time: '',
+      read: false
+    });
     this.chatService.getChatData().subscribe((res) => {
+      let index = this.mockUserList.findIndex((val:any)=> val.phone === phone)
+      this.mockUserList[index].newMessage = 0
       this.storageArray = res
       const storeIndex = this.storageArray
         .findIndex((storage: any) => storage.roomId === this.roomId);
@@ -85,11 +118,14 @@ export class ChatRoomComponent {
       this.storageArray = res
       const storeIndex = this.storageArray
         .findIndex((storage: any) => storage.roomId === this.roomId);
+      const date = new Date()
       if (this.messageText.trim().length) {
         if (storeIndex > -1) {
           this.storageArray[storeIndex].chats.push({
             user: this.currentUser.name,
-            message: this.messageText
+            message: this.messageText,
+            time: `${date.getHours()} : ${date.getMinutes()}`,
+            read: false
           });
 
           const newMessage = {
@@ -97,35 +133,51 @@ export class ChatRoomComponent {
             roomId: this.roomId,
             message: {
               user: this.currentUser.name,
-              message: this.messageText
+              message: this.messageText,
+              time: `${date.getHours()} : ${date.getMinutes()}`,
+              read: false
             }
           }
-          console.log(this.currentUser.name, "update", this.messageText)
           this.chatService.updateChats(newMessage).subscribe()
         } else {
           const updateStorage = {
             roomId: this.roomId,
             chats: [{
               user: this.currentUser.name,
-              message: this.messageText
+              message: this.messageText,
+              time: `${date.getHours()} : ${date.getMinutes()}`,
+              read: false
             }]
           };
-          console.log(updateStorage, "updateStorage")
           this.chatService.updateChats(updateStorage).subscribe()
           this.storageArray.push(updateStorage);
         }
+        let read = this.selectedUser && this.selectedUser.name === this.currentUser.name 
+        console.log(read , "read")
         this.chatService.sendMessage({
           user: this.currentUser.name,
           room: this.roomId,
-          message: this.messageText
+          message: this.messageText,
+          time: `${date.getHours()} : ${date.getMinutes()}`,
+          read: read
         });
       }
       this.messageText = '';
     })
+    console.log(this.selectedUser , this.roomId , "12345:::")
   }
   searchUser(evt: any) {
     this.userList = this.mockUserList.filter((val: any) => {
       return val.name.toLowerCase().indexOf(evt.target.value.toLowerCase()) > -1
     })
   }
+  // speechStart(){
+  //   this.speech = true
+  //  this.service.start() 
+
+  // }
+  // speechStop(){
+  //   this.speech = false
+  //  this.service.stop()
+  // }
 }

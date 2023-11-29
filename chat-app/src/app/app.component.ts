@@ -9,9 +9,7 @@ import { MongoClient } from 'mongodb';
 })
 export class AppComponent {
   title = 'chat-app';
- ngOnInit(){
-
- }
+ ngOnInit(){ }
  name(evt:any){
  console.log(evt ,"123")
  }
