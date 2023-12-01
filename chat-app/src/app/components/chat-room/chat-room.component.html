@@ -46,18 +46,21 @@
 
           </div>
 
-          <div class="chat-body">
+          <div class="chat-body" #chatContainer>
             <div class="chat-scroll">
-              <div *ngFor="let item of messageArray"
-                [ngClass]="item?.user === currentUser?.name ? 'same-user':'diff-user'">
-                <div class="message">
-                  <p class="message-container">{{item?.message}}
-                    <span> {{item.time}} </span>
-                    <span *ngIf="item?.user === currentUser?.name">
-                    <!-- <i *ngIf="!item?.read" class="bi bi-check2"></i> -->
-                    <i [ngClass]="item?.read ? 'read' :'unread'" class="bi bi-check2-all"></i>
-                  </span>
-                  </p>
+              <div class="chat-group" *ngFor="let messageGroup of messageData">
+                <h1>{{messageGroup.date}}</h1>
+                <div *ngFor="let item of messageGroup.messages"
+                  [ngClass]="item?.user === currentUser?.name ? 'same-user':'diff-user'">
+                  <div class="message">
+                    <p class="message-container">{{item?.message}}
+                      <span> {{item.time}} </span>
+                      <span *ngIf="item?.user === currentUser?.name">
+                        <!-- <i *ngIf="!item?.read" class="bi bi-check2"></i> -->
+                        <i [ngClass]="item?.read ? 'read' :'unread'" class="bi bi-check2-all"></i>
+                      </span>
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

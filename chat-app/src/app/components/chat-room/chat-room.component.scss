@@ -157,40 +157,47 @@
                     min-height: 460px;
 
                     .chat-scroll {
-                        display: flex;
-                        justify-content: end;
-                        align-items: end;
-                        flex-direction: column;
-
-                        .same-user {
-                            text-align: end;
+                        .chat-group {
                             display: flex;
-                        }
+                            justify-content: end;
+                            align-items: end;
+                            flex-direction: column;
+                            h1{
+                                display: flex;
+                                justify-content: center;
+                                width: 100%;
+                                font-size: 20px;
+                            }
+                            .same-user {
+                                text-align: end;
+                                display: flex;
+                            }
 
-                        .diff-user {
-                            display: flex;
-                            width: 100%;
-                        }
+                            .diff-user {
+                                display: flex;
+                                width: 100%;
+                            }
 
-                        .same-user,
-                        .diff-user {
-                            .message {
-                                background: #90c388;
-                                padding: 1px 23px;
-                                border-radius: 11px;
-                                margin-bottom: 5px;
+                            .same-user,
+                            .diff-user {
+                                .message {
+                                    background: #90c388;
+                                    padding: 1px 23px;
+                                    border-radius: 11px;
+                                    margin-bottom: 5px;
 
-                                .message-container {
-                                    margin: auto;
-                                    word-break: break-word;
-                                    max-width: 400px;
-                                    .read{
-                                        color: blue;
+                                    .message-container {
+                                        margin: auto;
+                                        word-break: break-word;
+                                        max-width: 400px;
+
+                                        .read {
+                                            color: blue;
+                                        }
                                     }
                                 }
                             }
                         }
-
                     }
 
                     &::-webkit-scrollbar {
