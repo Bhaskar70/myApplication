@@ -169,7 +169,7 @@
                                 font-size: 20px;
                             }
                             .same-user {
-                                text-align: end;
+                                // text-align: end;
                                 display: flex;
                             }
 
@@ -182,7 +182,7 @@
                             .diff-user {
                                 .message {
                                     background: #90c388;
-                                    padding: 1px 23px;
+                                    padding: 1px 8px;
                                     border-radius: 11px;
                                     margin-bottom: 5px;
 
@@ -190,7 +190,10 @@
                                         margin: auto;
                                         word-break: break-word;
                                         max-width: 400px;
-
+                                        .time{
+                                            font-size: 10px;
+                                            color: #4c5ecef2;
+                                        }
                                         .read {
                                             color: blue;
                                         }
@@ -227,7 +230,7 @@
 
                     input {
                         outline: none;
-
+                        box-shadow: none;
                         &:focus {
                             outline: none;
 
@@ -235,6 +238,17 @@
                     }
 
                     .row {
+                        .input{
+                            position: relative;
+                            .msg-icon{
+                                position: absolute;
+                                right: 9px;
+                                top: 0px;
+                                font-size: 24px;
+                                border: none;
+                                background: no-repeat;
+                            }
+                        }
                         .mine {
                             display: flex;
                             justify-content: space-between;

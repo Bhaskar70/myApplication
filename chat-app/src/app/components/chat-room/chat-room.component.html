@@ -6,6 +6,8 @@
       <div *ngIf="currentUser" class="currentUser">
         <!-- <img class="avatar" src='{{currentUser.image}}' /> -->
         <p>{{currentUser.name}}</p>
+              <!-- <p><i class="bi bi-box-arrow-right"></i></p> -->
+
       </div>
       <div class="searchBar">
         <input type="text" class="searchField" (input)="searchUser($event)" />
@@ -54,7 +56,7 @@
                   [ngClass]="item?.user === currentUser?.name ? 'same-user':'diff-user'">
                   <div class="message">
                     <p class="message-container">{{item?.message}}
-                      <span> {{item.time}} </span>
+                      <span class="time"> {{item.time}} </span>
                       <span *ngIf="item?.user === currentUser?.name">
                         <!-- <i *ngIf="!item?.read" class="bi bi-check2"></i> -->
                         <i [ngClass]="item?.read ? 'read' :'unread'" class="bi bi-check2-all"></i>
@@ -70,9 +72,12 @@
 
             <div class="row justify-content-around">
               <div class="col-md-8">
-                <div class="form-group mb-0">
+                <div class="form-group mb-0 input">
                   <input type="text" placeholder="Type a message" class="form-control" [(ngModel)]="messageText"
                     (keyup)="$event.keyCode === 13 && sendMessage()" />
+                    <button class="msg-icon" [disabled]="messageText ? false : true" (click)="sendMessage()">
+                      <i class="bi bi-arrow-up-circle-fill"></i>
+                    </button>
                 </div>
               </div>
               <div class="col-md-1 d-flex mine">
@@ -80,10 +85,10 @@
                 <i class="bi bi-camera"></i>
                 <i class="bi bi-file-image"></i>
               </div>
-              <div class="col-md-2 text-center align-self-center">
+              <!-- <div class="col-md-2 text-center align-self-center">
                 <button class="btn btn-primary btn-sm px-3" (click)="sendMessage()">Send
                 </button>
-              </div>
+              </div> -->
             </div>
 
           </div>
