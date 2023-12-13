@@ -26,14 +26,16 @@ export class ChatRoomComponent {
   mockUserList: any;
   speech: boolean = false;
   messageData: any = [];
+  isUserSpeaking: boolean = false;
   ngOnInit() {
     this.chatService.getNewUser().subscribe((res => {
       setTimeout(() => {
         this.store.dispatch(setUserData())
-      }, 500);
+      }, 1000);
     }))
     this.store.select(UserData).subscribe((userdata) => {
       this.userList = JSON.parse(JSON.stringify(userdata))
+      console.log(this.userList, "12345:::")
       if (this.currentUser) {
         this.mockUserList = this.userList.filter((user: any) => user.phone !== this.currentUser.phone.toString());
       }
@@ -46,16 +48,23 @@ export class ChatRoomComponent {
         this.chatService.getChatData().subscribe((res) => {
           this.storageArray = res
           Object.keys(this.currentUser.roomId).forEach((val: any) => {
-            console.log(this.storageArray , "1111" ,this.currentUser.roomId[val])
-                const index = this.storageArray
-                  .findIndex((storage: any) => storage.roomId === this.currentUser.roomId[val]);
-                let unreadmsg = this.storageArray[index]?.chats.filter((chat: any) => chat.user !== this.currentUser.name && !chat.read)
-                console.log(unreadmsg, "unreadmsg" )
-                if(unreadmsg && unreadmsg.length){
-                   let user = unreadmsg.map((res:any)=> res.user)[0]
-                   let inx =  this.mockUserList.findIndex((sender:any)=> sender.name === user)
-                   this.mockUserList[inx].newMessage = unreadmsg.length
-                }
+            console.log(this.storageArray, "1111", this.currentUser.roomId[val])
+            const index = this.storageArray
+              .findIndex((storage: any) => storage.roomId === this.currentUser.roomId[val]);
+            let lastmessage = this.storageArray[index]?.chats
+            if (lastmessage && lastmessage.length) {
+              let lastuser = lastmessage.map((res: any) => res.user)[0]
+              let userData = this.mockUserList.findIndex((sender: any) => sender.name === lastuser)
+              this.mockUserList[userData].lastmsg = lastmessage[lastmessage.length - 1]
+            }
+            let unreadmsg = this.storageArray[index]?.chats.filter((chat: any) => chat.user !== this.currentUser.name && !chat.read)
+            console.log(unreadmsg, "unreadmsg")
+            if (unreadmsg && unreadmsg.length) {
+              let user = unreadmsg.map((res: any) => res.user)[0]
+              let inx = this.mockUserList.findIndex((sender: any) => sender.name === user)
+              this.mockUserList[inx].newMessage = unreadmsg.length
+              console.log(this.mockUserList[inx], "last msg")
+            }
           })
         })
       }
@@ -87,7 +96,8 @@ export class ChatRoomComponent {
                     const index = this.storageArray
                       .findIndex((storage: any) => storage.roomId === data.room);
                     let unreadmsg = this.storageArray[index]?.chats.filter((chat: any) => chat.user !== this.currentUser.name && !chat.read)
-                    console.log(unreadmsg, "unreadmsg")
+                    console.log(unreadmsg, "unreadmsg", unreadmsg[unreadmsg.length - 1])
+                    this.mockUserList[i].lastmsg = unreadmsg[unreadmsg.length - 1]
                     this.mockUserList[i].newMessage = unreadmsg.length
                   }
                 })
@@ -101,7 +111,7 @@ export class ChatRoomComponent {
 
   constructor(private chatService: ChatService, private store: Store, private service: VoiceRecognitionService
   ) {
-    this.service.init()
+    this.initVoiceInput()
   }
   messagesGroupedByDate() {
     const groupedMessages = this.groupByDate();
@@ -232,13 +242,25 @@ export class ChatRoomComponent {
     this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight + 10;
     console.log(this.chatContainer.nativeElement.scrollHeight, this.chatContainer.nativeElement.scrollTop, "scroll")
   }
-  // speechStart(){
-  //   this.speech = true
-  //  this.service.start() 
-
-  // }
+  startRecording() {
+    this.isUserSpeaking = true;
+    this.service.start();
+    // this.messageText = 
+  }
   // speechStop(){
   //   this.speech = false
   //  this.service.stop()
   // }
+  initVoiceInput() {
+    this.service.init().subscribe(() => {
+    });
+
+    this.service.speechInput().subscribe((input) => {
+      this.messageText = input
+    });
+  }
+  stopRecording() {
+    this.service.stop();
+    this.isUserSpeaking = false;
+  }
 }

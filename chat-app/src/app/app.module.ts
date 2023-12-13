@@ -16,6 +16,9 @@ import { AppEffects } from './state/app.effects';
 import { EffectsModule } from '@ngrx/effects';
 import { ErrorsPageComponent } from './components/errors-page/errors-page.component';
 import { ChatRoomWorkflowService } from './services/chat-room-workflow.service';
+import { LoaderComponent } from './components/loader/loader.component';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
@@ -25,8 +28,11 @@ import { ChatRoomWorkflowService } from './services/chat-room-workflow.service';
     ChatRoomComponent,
     HomepageComponent,
     ErrorsPageComponent,
+    LoaderComponent,
   ],
   imports: [
+    BrowserAnimationsModule,
+    NgxSpinnerModule.forRoot({type:'ball-fussion'}),
     BrowserModule,
     AppRoutingModule,
     NgbModule,
@@ -34,7 +40,7 @@ import { ChatRoomWorkflowService } from './services/chat-room-workflow.service';
     ReactiveFormsModule,
     FormsModule,
     StoreModule.forRoot({data:reducerData}),
-    EffectsModule.forRoot([AppEffects])
+    EffectsModule.forRoot([AppEffects]),
   ],
   providers: [ChatService,ChatRoomWorkflowService],
   bootstrap: [AppComponent]

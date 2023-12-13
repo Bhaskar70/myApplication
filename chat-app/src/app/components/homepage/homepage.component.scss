@@ -1,23 +1,22 @@
-.main{
-    background-image: url('../../../assets/user/mychatlogo.png');
-    height: 63vh;
-    width: 89%;
-    background-repeat: no-repeat;
-    background-position: right;
-}
-.msg{
-    margin: auto auto;
+.main {
+    max-width: 900px;
+    margin: 100px auto 0;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    height: 100%;
-    width: 50%;
-    justify-content: center;
-    font-family: monospace;
-    div{
-        width: 100%;
-        button{
-            margin: 3px;
+    padding: 0px 50px;
+    .msg{
+        font-family: monospace;
+        div{
+            width: 100%;
+            button{
+                margin: 3px;
+            }
+        }
+    }
+    .imgLogo {
+        img {
+            width: 100%;
+            height: 100%;
         }
     }
 }

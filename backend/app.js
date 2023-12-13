@@ -1,7 +1,7 @@
 let express = require('express');
 let app = express();
 const mongoose = require('mongoose');
-
+const multer = require('multer');
 const { MongoClient } = require('mongodb');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -16,7 +16,7 @@ let io = socketIO(server);
 const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(cors());
-
+app.use('/uploads', express.static('uploads'));
 const yourSchema = new mongoose.Schema({
   id: Number,
   name: String,
@@ -180,3 +180,42 @@ app.post('/api/markasread', async (req, res) => {
     res.status(500).json({ error: error.message })
   }
 })
+
+
+// image uploading functionality
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage });
+
+app.post('/upload', upload.single('image'), async (req, res) => {
+  try {
+    // Connect to the MongoDB server
+    await client.connect();
+
+    // Select the database
+    const imagedb = client.db('test');
+
+    // Insert image information into the collection
+    const imagecollection = imagedb.collection('images');
+    const result = await imagecollection.insertOne({
+      filename: req.file.originalname,
+      filepath: req.file.path,
+    });
+
+    console.log(`Image uploaded with ID: ${result.insertedId}`);
+
+    res.json({ message: 'Image uploaded successfully' });
+  } finally {
+    // Close the connection
+    await client.close();
+  }
+});
+

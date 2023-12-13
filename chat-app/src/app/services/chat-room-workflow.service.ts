@@ -19,7 +19,7 @@ export class ChatRoomWorkflowService implements CanActivate {
           if (userData.filter((val: any) => val.phone == mobileno.toString()).length) {
             return true
           } else {
-            this.router.navigate(['error'])
+            this.router.navigate(['login'])
             return false
           }
         }))

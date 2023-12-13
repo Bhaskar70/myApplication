@@ -56,13 +56,22 @@ export class LoginComponent {
   }
 
   login(dismiss: any): void {
+    this.chatService.showSpinner()
+    if(!this.phone.length){
+      this.router.navigate(['error'])
+      this.chatService.hideSpinner()
+      dismiss();
+
+    }
+    if(this.phone.length){
     this.currentUser = this.userList.find((user:any) => user.phone === this.phone.toString());
     console.log(this.currentUser , this.userList , "59:::",this.phone)
       this.showScreen = true;
       this.store.dispatch(mobileNumber({mobileNo : this.phone.toString()}))
       this.router.navigate(['chat-room'])
-       dismiss();
-   
+        this.chatService.hideSpinner()
+      dismiss();
+    }
   }
   phoneValidation(evt :any){
    if(this.phone.length > 9){

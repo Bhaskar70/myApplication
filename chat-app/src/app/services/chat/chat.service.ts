@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 
@@ -11,7 +12,7 @@ export class ChatService {
   private url = 'http://192.168.10.16:3000'; // your server local path
 
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient , private loader : NgxSpinnerService) {
     this.socket = io(this.url, { transports: ['websocket', 'polling', 'flashsocket'] });
   }
   httpOptions = {
@@ -30,6 +31,14 @@ export class ChatService {
   newUser(data: any) {
     console.log(data , "new user")
     this.socket.emit('register', data)
+  }
+  showSpinner(){
+    this.loader.show()
+  }
+  hideSpinner(){
+    setTimeout(() => {
+      this.loader.hide()
+    }, 500);
   }
   getNewUser(): Observable<any> {
     return new Observable<{
@@ -90,5 +99,8 @@ export class ChatService {
   }
   markAsRead(data:any){
   return this.http.post(`${this.url}/api/markasread`, data)
+  }
+  uploadImage(data:any){
+    return this.http.post(`${this.url}/upload` , data)
   }
 }
