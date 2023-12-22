@@ -56,12 +56,20 @@
                 <div *ngFor="let item of messageGroup.messages"
                   [ngClass]="item?.user === currentUser?.name ? 'same-user':'diff-user'">
                   <div class="message">
-                    <p class="message-container">{{item?.message}}
+                    <p class="message-container" *ngIf="item?.type=='text'">{{item?.message}}
                       <span class="time"> {{item.time}} </span>
                       <span *ngIf="item?.user === currentUser?.name">
                         <!-- <i *ngIf="!item?.read" class="bi bi-check2"></i> -->
                         <i [ngClass]="item?.read ? 'read' :'unread'" class="bi bi-check2-all"></i>
                       </span>
+                    </p>
+                    <p *ngIf="item?.type=='image'">
+                        <img [src]="item?.message" [alt]="item?.message">
+                        <span class="time"> {{item.time}} </span>
+                        <span *ngIf="item?.user === currentUser?.name">
+                          <!-- <i *ngIf="!item?.read" class="bi bi-check2"></i> -->
+                          <i [ngClass]="item?.read ? 'read' :'unread'" class="bi bi-check2-all"></i>
+                        </span>
                     </p>
                   </div>
                 </div>
@@ -85,7 +93,9 @@
                 <i class="bi bi-mic" *ngIf="!isUserSpeaking" (click)="startRecording()"></i>
                 <i class="bi bi-mic-mute" *ngIf="isUserSpeaking" (click)="stopRecording()"></i>
                 <i class="bi bi-camera"></i>
-                <i class="bi bi-file-image"></i>
+               <label for="imageFile"> <i class="bi bi-file-image"></i>
+                <input style="display: none;" type="file" id="imageFile"  (change)="SelectedImage($event)"/>
+              </label>
               </div>
               <!-- <div class="col-md-2 text-center align-self-center">
                 <button class="btn btn-primary btn-sm px-3" (click)="sendMessage()">Send

@@ -27,6 +27,7 @@ export class ChatRoomComponent {
   speech: boolean = false;
   messageData: any = [];
   isUserSpeaking: boolean = false;
+  url: boolean=false;
   ngOnInit() {
     this.chatService.getNewUser().subscribe((res => {
       setTimeout(() => {
@@ -142,6 +143,7 @@ export class ChatRoomComponent {
       user: this.currentUser.name,
       room: this.roomId,
       message: this.messageText,
+      type : this.url ? "image" : "text",
       time: '',
       read: false
     });
@@ -158,6 +160,7 @@ export class ChatRoomComponent {
       this.join(this.currentUser.name, this.roomId);
     })
     this.messageText = ''
+    this.url = false
   }
 
   join(username: string, roomId: string): void {
@@ -176,6 +179,7 @@ export class ChatRoomComponent {
           this.storageArray[storeIndex].chats.push({
             user: this.currentUser.name,
             message: this.messageText,
+            type : this.url ? "image" : "text",
             time: `${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
             date: `${date.toLocaleDateString()}`,
             read: false
@@ -187,6 +191,7 @@ export class ChatRoomComponent {
             message: {
               user: this.currentUser.name,
               message: this.messageText,
+              type : this.url ? "image" : "text",
               time: `${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
               date: `${date.toLocaleDateString()}`,
               read: false
@@ -199,6 +204,7 @@ export class ChatRoomComponent {
             chats: [{
               user: this.currentUser.name,
               message: this.messageText,
+              type : this.url ? "image" : "text",
               time: `${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
               date: `${date.toLocaleDateString()}`,
               read: false
@@ -213,12 +219,14 @@ export class ChatRoomComponent {
           user: this.currentUser.name,
           room: this.roomId,
           message: this.messageText,
+          type : this.url ? "image" : "text",
           time: `${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
           date: `${date.toLocaleDateString()}`,
           read: read
         });
       }
       this.messageText = '';
+      this.url = false
     })
 
     console.log(this.selectedUser, this.roomId, "12345:::")
@@ -262,5 +270,16 @@ export class ChatRoomComponent {
   stopRecording() {
     this.service.stop();
     this.isUserSpeaking = false;
+  }
+  SelectedImage(evt:any){
+      const selectedFile = evt.target.files[0];
+      console.log(selectedFile.name, 'img')
+      const formData = new FormData()
+      formData.append('image', selectedFile)
+      if (selectedFile) {
+        this.chatService.uploadImage(formData).subscribe()
+        this.url = true;
+        this.messageText = `http://192.168.10.16:3000/uploads/${selectedFile.name}`;
+      }
   }
 }
