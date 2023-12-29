@@ -27,13 +27,29 @@ export class ChatRoomComponent {
   speech: boolean = false;
   messageData: any = [];
   isUserSpeaking: boolean = false;
-  url: boolean=false;
+  url: boolean = false;
+
+  // ngOnInit lifecycle 
+
   ngOnInit() {
+
+    // new user socket subscription  
+
     this.chatService.getNewUser().subscribe((res => {
-      setTimeout(() => {
+      // setTimeout(() => {
+        console.log("dispatching user data")
         this.store.dispatch(setUserData())
-      }, 1000);
+      // }, 1000);
     }))
+
+    // deleted message socket subscription
+
+    this.chatService.getDeletdMessage().subscribe((res) => {
+      console.log(res, "message deleted")
+    })
+
+    // get user data for the store 
+
     this.store.select(UserData).subscribe((userdata) => {
       this.userList = JSON.parse(JSON.stringify(userdata))
       console.log(this.userList, "12345:::")
@@ -41,6 +57,8 @@ export class ChatRoomComponent {
         this.mockUserList = this.userList.filter((user: any) => user.phone !== this.currentUser.phone.toString());
       }
     })
+
+    // update current user and userlist based on login mobile number from the store
     this.store.select(getMobileNumber).subscribe((phone: any) => {
       if (phone) {
         this.currentUser = this.userList.find((user: any) => user.phone === phone.toString());
@@ -70,6 +88,8 @@ export class ChatRoomComponent {
         })
       }
     })
+
+    // socket subscription for the messages
     this.chatService.getMessage().subscribe((data: { user: string, room: string, message: string }) => {
       console.log(this.selectedUser, "321:::")
       if (this.selectedUser) {
@@ -114,6 +134,8 @@ export class ChatRoomComponent {
   ) {
     this.initVoiceInput()
   }
+
+  // grouping messages based on the sent date
   messagesGroupedByDate() {
     const groupedMessages = this.groupByDate();
     return Object.keys(groupedMessages).map((date) => ({
@@ -133,6 +155,15 @@ export class ChatRoomComponent {
       return acc;
     }, {});
   }
+  private formatDate(date: string): string {
+    const today = new Date();
+    if (today.toLocaleDateString() === date) {
+      return 'Today';
+    } else {
+      return formatDate(date, 'dd/MM/yyyy', 'en-US');
+    }
+  }
+  // user selection function
 
   selectUserHandler(phone: string): void {
     this.selectedUser = this.userList.find((user: any) => user.phone === phone);
@@ -143,7 +174,7 @@ export class ChatRoomComponent {
       user: this.currentUser.name,
       room: this.roomId,
       message: this.messageText,
-      type : this.url ? "image" : "text",
+      type: this.url ? "image" : "text",
       time: '',
       read: false
     });
@@ -167,6 +198,8 @@ export class ChatRoomComponent {
     this.chatService.joinRoom({ user: username, room: roomId });
   }
 
+  // send message function 
+
   sendMessage(): void {
     this.chatService.getChatData().subscribe((res) => {
       console.log(res, "chats")
@@ -179,10 +212,11 @@ export class ChatRoomComponent {
           this.storageArray[storeIndex].chats.push({
             user: this.currentUser.name,
             message: this.messageText,
-            type : this.url ? "image" : "text",
+            type: this.url ? "image" : "text",
             time: `${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
             date: `${date.toLocaleDateString()}`,
-            read: false
+            read: false,
+            isDeleted: ''
           });
 
           const newMessage = {
@@ -191,10 +225,11 @@ export class ChatRoomComponent {
             message: {
               user: this.currentUser.name,
               message: this.messageText,
-              type : this.url ? "image" : "text",
+              type: this.url ? "image" : "text",
               time: `${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
               date: `${date.toLocaleDateString()}`,
-              read: false
+              read: false,
+              isDeleted: ''
             }
           }
           this.chatService.updateChats(newMessage).subscribe()
@@ -204,10 +239,11 @@ export class ChatRoomComponent {
             chats: [{
               user: this.currentUser.name,
               message: this.messageText,
-              type : this.url ? "image" : "text",
+              type: this.url ? "image" : "text",
               time: `${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
               date: `${date.toLocaleDateString()}`,
-              read: false
+              read: false,
+              isDeleted: ''
             }]
           };
           this.chatService.updateChats(updateStorage).subscribe()
@@ -219,10 +255,11 @@ export class ChatRoomComponent {
           user: this.currentUser.name,
           room: this.roomId,
           message: this.messageText,
-          type : this.url ? "image" : "text",
+          type: this.url ? "image" : "text",
           time: `${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
           date: `${date.toLocaleDateString()}`,
-          read: read
+          read: read,
+          isDeleted: ''
         });
       }
       this.messageText = '';
@@ -236,29 +273,31 @@ export class ChatRoomComponent {
       return val.name.toLowerCase().indexOf(evt.target.value.toLowerCase()) > -1
     })
   }
-  private formatDate(date: string): string {
-    const today = new Date();
-    if (today.toLocaleDateString() === date) {
-      return 'Today';
-    } else {
-      return formatDate(date, 'dd/MM/yyyy', 'en-US');
-    }
+
+  // deleting message
+
+  deleteMsg(deletedMsg: any) {
+    console.log(deletedMsg, "delete", this.roomId);
+    this.chatService.delete({...deletedMsg , roomId : this.roomId , deleteForUser : this.currentUser.name}).subscribe((res)=>{
+      this.chatService.deleteMessage(deletedMsg);
+    })
   }
 
+  // scroll to function for the new message 
 
   scrollToBottom() {
     this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight + 10;
     console.log(this.chatContainer.nativeElement.scrollHeight, this.chatContainer.nativeElement.scrollTop, "scroll")
   }
+
+  // voice message function 
+
   startRecording() {
     this.isUserSpeaking = true;
     this.service.start();
     // this.messageText = 
   }
-  // speechStop(){
-  //   this.speech = false
-  //  this.service.stop()
-  // }
+
   initVoiceInput() {
     this.service.init().subscribe(() => {
     });
@@ -271,15 +310,17 @@ export class ChatRoomComponent {
     this.service.stop();
     this.isUserSpeaking = false;
   }
-  SelectedImage(evt:any){
-      const selectedFile = evt.target.files[0];
-      console.log(selectedFile.name, 'img')
-      const formData = new FormData()
-      formData.append('image', selectedFile)
-      if (selectedFile) {
-        this.chatService.uploadImage(formData).subscribe()
-        this.url = true;
-        this.messageText = `http://192.168.10.16:3000/uploads/${selectedFile.name}`;
-      }
+
+  // image selection post call 
+  SelectedImage(evt: any) {
+    const selectedFile = evt.target.files[0];
+    console.log(selectedFile.name, 'img')
+    const formData = new FormData()
+    formData.append('image', selectedFile)
+    if (selectedFile) {
+      this.chatService.uploadImage(formData).subscribe()
+      this.url = true;
+      this.messageText = `http://192.168.10.16:3000/uploads/${selectedFile.name}`;
+    }
   }
 }

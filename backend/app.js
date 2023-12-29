@@ -46,12 +46,20 @@ io.on('connection', (socket) => {
     socket.join(data.room);
     socket.broadcast.to(data.room).emit('user joined');
   });
-  
+
+  // new message 
   socket.on('message', (data) => {
-    io.emit('new message', { user: data.user, room : data.room, message: data.message });
+    io.emit('new message', { user: data.user, room: data.room, message: data.message });
   });
-  socket.on('register' , (data) => {
-    io.emit('new user' , { phone: data.phone })
+
+  // delete message
+  socket.on('delete', (data) => {
+    io.emit('new message', { user: data.user, room: data.room, message: data.message });
+  });
+
+  // new account created
+  socket.on('register', (data) => {
+    io.emit('new user', { phone: data.phone })
   })
 });
 server.listen(port, '192.168.10.16', () => {
@@ -138,13 +146,13 @@ app.post('/api/update/register', async (req, res) => {
 app.post('/api/update/roomid', async (req, res) => {
   try {
     await createDb()
-    if(findUserData.length){
-      Object.keys(req.body).forEach((val, i)=>{
-         const filter = {id : Number(val)}
-         const dynamicKey = `roomId.${findUserData.length+1}`;
-        console.log(req.body[val] , val ,"111" , findUserData.length +1)
-         const update = { $set: { [dynamicKey]: req.body[val] } };
-         userDataCollection.updateOne(filter, update, (err, result) => {
+    if (findUserData.length) {
+      Object.keys(req.body).forEach((val, i) => {
+        const filter = { id: Number(val) }
+        const dynamicKey = `roomId.${findUserData.length + 1}`;
+        console.log(req.body[val], val, "111", findUserData.length + 1)
+        const update = { $set: { [dynamicKey]: req.body[val] } };
+        userDataCollection.updateOne(filter, update, (err, result) => {
           if (err) {
             console.error('Error updating documents:', err);
           } else {
@@ -164,12 +172,12 @@ app.post('/api/update/roomid', async (req, res) => {
 app.post('/api/markasread', async (req, res) => {
   try {
     await createDb()
-    console.log(req.body , "123:::")
-    const {roomId , user } = req.body
+    console.log(req.body, "123:::")
+    const { roomId, user } = req.body
     collection.updateMany(
-      { roomId  : roomId},
+      { roomId: roomId },
       { $set: { 'chats.$[elem].read': true } },
-      { arrayFilters: [{ 'elem.user': user }] } , function (err, res) {
+      { arrayFilters: [{ 'elem.user': user }] }, function (err, res) {
         if (err) throw err;
         console.log("1 document inserted");
         db.close();
@@ -219,3 +227,34 @@ app.post('/upload', upload.single('image'), async (req, res) => {
   }
 });
 
+// api for delete message
+
+app.post('/api/delete/msg', async (req, res) => {
+  try {
+    await createDb()
+    console.log(req.body, "delete:::")
+    const { roomId, user, deleteForUser, time, message } = req.body
+    collection.updateMany(
+      { roomId: roomId },
+      { $set: { 'chats.$[elem].isDeleted': deleteForUser } },
+      {
+        arrayFilters: [
+          {
+            $and: [
+              { 'elem.time': time },
+              { 'elem.user': user },
+              { 'elem.message': message },
+            ],
+          },
+        ]
+      }, function (err, res) {
+        if (err) throw err;
+        console.log("1 document inserted");
+        db.close();
+      }
+    )
+    res.json({})
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})

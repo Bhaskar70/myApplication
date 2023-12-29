@@ -235,6 +235,19 @@
                                     margin-bottom: 5px;
 
                                     .message-container {
+                                        i.bi-trash{
+                                            display: none;
+                                        }
+                                        &:hover{
+                                            i.bi-trash{
+                                                display: inline;
+                                            }
+                                        }
+                                        img{
+                                            display: block;
+                                            width: 100px;
+                                            height: 100px;
+                                        }
                                         margin: auto;
                                         word-break: break-word;
                                         max-width: 400px;

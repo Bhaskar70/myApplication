@@ -67,12 +67,14 @@ export class RegisterComponent {
       }
       this.loginData.push(data)
       console.log(this.loginData, "5555%%%", obj)
-      this.service.updateRegisterData(data).subscribe()
-      this.service.newUser({
-        user: data.name,
-        room: 'register',
-        phone: data.phone
+      this.service.updateRegisterData(data).subscribe((res)=>{
+        this.service.newUser({
+          user: data.name,
+          room: 'register',
+          phone: data.phone
+        })
       })
+      
       this.openPopup(this.registered)
     }
   }

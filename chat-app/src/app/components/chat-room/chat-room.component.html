@@ -7,7 +7,7 @@
         <img class="avatar" src='{{currentUser.image}}' />
         <p>{{currentUser.name}}</p>
               <!-- <p><i class="bi bi-box-arrow-right"></i></p> -->
-
+         <p><i class="bi bi-pencil-square"></i></p>
       </div>
       <div class="searchBar">
         <input type="text" class="searchField" (input)="searchUser($event)" />
@@ -56,14 +56,15 @@
                 <div *ngFor="let item of messageGroup.messages"
                   [ngClass]="item?.user === currentUser?.name ? 'same-user':'diff-user'">
                   <div class="message">
-                    <p class="message-container" *ngIf="item?.type=='text'">{{item?.message}}
+                    <p class="message-container" *ngIf="item?.type=='text' && item?.isDeleted !== currentUser.name">{{item?.message}}
                       <span class="time"> {{item.time}} </span>
                       <span *ngIf="item?.user === currentUser?.name">
                         <!-- <i *ngIf="!item?.read" class="bi bi-check2"></i> -->
                         <i [ngClass]="item?.read ? 'read' :'unread'" class="bi bi-check2-all"></i>
                       </span>
+                      <i (click)="deleteMsg(item)" class="bi bi-trash"></i>
                     </p>
-                    <p *ngIf="item?.type=='image'">
+                    <p class="message-container" *ngIf="item?.type=='image'">
                         <img [src]="item?.message" [alt]="item?.message">
                         <span class="time"> {{item.time}} </span>
                         <span *ngIf="item?.user === currentUser?.name">
